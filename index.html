@@ -164,6 +164,8 @@
         const progress = document.getElementById('progress');
         const bootContainer = document.getElementById('boot-container');
         const terminal = document.getElementById('terminal');
+        const inputField = document.getElementById('input');
+        const output = document.getElementById('output');
 
         function showMessage(index) {
             if (index < messages.length) {
@@ -185,8 +187,25 @@
             setTimeout(() => {
                 bootContainer.style.display = 'none';
                 terminal.style.display = 'block';
+                inputField.focus();
             }, 6000);
         }
+
+        // Command handling
+        function handleCommand(command) {
+            const response = document.createElement('p');
+            response.textContent = `Command not found: ${command}`;
+            output.appendChild(response);
+        }
+
+        inputField.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = inputField.value.trim();
+                inputField.value = '';  // Clear input field
+                handleCommand(command);
+                output.scrollTop = output.scrollHeight;  // Scroll to bottom
+            }
+        });
 
         window.onload = startBootSequence;
     </script>
