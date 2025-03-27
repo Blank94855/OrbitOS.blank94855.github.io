@@ -1,8 +1,3 @@
-if (!sessionStorage.getItem('booted')) {
-    window.location.href = 'boot.html';
-    sessionStorage.setItem('booted', true);
-}
-
 const output = document.getElementById('output');
 const inputField = document.getElementById('input');
 const prompt = document.getElementById('prompt');
