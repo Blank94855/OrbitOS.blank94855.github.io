@@ -112,13 +112,13 @@ const commands = {
     `,
 
     shutdown: () => {
-        const response = 'Shutting down...';
-        setTimeout(() => {
-            window.location.href = 'boot.html';
-        }, 1000);
-        return response;
-    },
-
+    const response = 'Shutting down...';
+    sessionStorage.removeItem('booted'); // Remove the booted state
+    setTimeout(() => {
+        window.location.href = 'boot.html';
+    }, 1000);
+    return response;
+    }
     calc: (args) => {
         try {
             if (!args) return "Usage: calc [expression]";
