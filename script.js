@@ -8,12 +8,12 @@ let historyIndex = -1;
 const config = {
     username: 'root',
     hostname: 'orbit',
-    version: '3.0.2',
+    version: '3.0.1',
     lastBootTime: new Date().toLocaleString(),
     systemInfo: {
         os: 'OrbitOS',
-        version: '3.0.2 - stable',
-        kernel: '5.4.1-1059-gcp',
+        version: '3.0.1 - stable',
+        kernel: '5.4.0-1059-gcp',
         architecture: 'x86_64',
         memory: '4.0GiB',
         disk: '1.0GiB',
@@ -93,7 +93,8 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>💥 Added boot screen </p>
+        <p>🧮 Added calculator command</p>
+        <p>📴 Renamed "exit" command to "shutdown"</p>
     `,
 
     weather: () => `
@@ -112,13 +113,13 @@ const commands = {
     `,
 
     shutdown: () => {
-    const response = 'Shutting down...';
-    sessionStorage.removeItem('booted');  // Remove the booted state to trigger boot screen again
-    setTimeout(() => {
-        window.location.href = 'boot.html';  // Redirect to boot screen after shutdown
-    }, 1000);
-    return response;
-    }
+        const response = 'Shutting down...';
+        setTimeout(() => {
+            window.close();
+        }, 1000);
+        return response;
+    },
+
     calc: (args) => {
         try {
             if (!args) return "Usage: calc [expression]";
