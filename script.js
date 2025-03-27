@@ -118,9 +118,9 @@ const commands = {
 
     shutdown: () => {
     const response = 'Shutting down...';
-    sessionStorage.removeItem('booted'); // Remove the booted state
+    sessionStorage.removeItem('booted');  // Remove the booted state to trigger boot screen again
     setTimeout(() => {
-        window.location.href = 'boot.html';
+        window.location.href = 'boot.html';  // Redirect to boot screen after shutdown
     }, 1000);
     return response;
     }
