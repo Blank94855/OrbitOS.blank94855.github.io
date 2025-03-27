@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrbitOS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -190,32 +189,6 @@
         }
 
         window.onload = startBootSequence;
-
-        // Terminal Command Handling
-        document.getElementById('input').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                let inputField = this;
-                let output = document.getElementById('output');
-                let command = inputField.value.trim().toLowerCase();
-
-                let response = '';
-                if (command === 'help') {
-                    response = "Available commands: help, clear, about";
-                } else if (command === 'clear') {
-                    output.innerHTML = '';
-                    inputField.value = '';
-                    return;
-                } else if (command === 'about') {
-                    response = "OrbitOS Terminal v1.0 - A simulated OS environment.";
-                } else {
-                    response = "Command not found.";
-                }
-
-                output.innerHTML += `<p># root/orbit/home>> ${command}</p><p>${response}</p>`;
-                inputField.value = '';
-            }
-        });
     </script>
 </body>
 </html>
