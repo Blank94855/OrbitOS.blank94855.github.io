@@ -2,11 +2,11 @@ const output = document.getElementById('output');
 const inputField = document.getElementById('input');
 const prompt = document.getElementById('prompt');
 
-// Boot sequence functionality
+
 const bootSequence = [
-    "Initializing OrbitOS v3.0.1...",
+    "Initializing OS...",
     "Checking hardware compatibility...",
-    "Loading kernel 5.4.0-1059-gcp...",
+    "Loading kernel 5.4.1-1059-gcp...",
     "Mounting root filesystem...",
     "Setting up system directories...",
     "Configuring network interfaces...",
@@ -21,7 +21,7 @@ const bootSequence = [
 
 function simulateBootSequence() {
     return new Promise((resolve) => {
-        output.innerHTML = ''; // Clear initial welcome message
+        output.innerHTML = ''; 
         
         bootSequence.forEach((message, index) => {
             setTimeout(() => {
@@ -29,10 +29,10 @@ function simulateBootSequence() {
                 progressElement.innerHTML = `<span class="highlight">[${index + 1}/${bootSequence.length}]</span> ${message}`;
                 output.appendChild(progressElement);
                 
-                // Scroll to bottom during boot
+                
                 output.scrollTop = output.scrollHeight;
                 
-                // If it's the last message, resolve the promise
+                
                 if (index === bootSequence.length - 1) {
                     setTimeout(resolve, 500);
                 }
@@ -42,11 +42,11 @@ function simulateBootSequence() {
 }
 
 function finalizeBootSequence() {
-    output.innerHTML = ''; // Clear boot messages
+    output.innerHTML = ''; 
     output.innerHTML = `
         <p>Welcome to <span class="highlight">OrbitOS</span></p>
         <p>Type 'help' for a list of commands</p>
-        <p class="highlight">Security patch: 1 January 2025</p>
+        <p class="highlight">Security patch: 1 March 2025</p>
     `;
 }
 
@@ -56,12 +56,12 @@ let historyIndex = -1;
 const config = {
     username: 'root',
     hostname: 'orbit',
-    version: '3.0.1',
+    version: '3.0.2',
     lastBootTime: new Date().toLocaleString(),
     systemInfo: {
         os: 'OrbitOS',
-        version: '3.0.1 - stable',
-        kernel: '5.4.0-1059-gcp',
+        version: '3.0.2 - beta',
+        kernel: '5.4.1-1059-gcp',
         architecture: 'x86_64',
         memory: '4.0GiB',
         disk: '1.0GiB',
@@ -141,8 +141,8 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>🧮 Added calculator command</p>
-        <p>📴 Renamed "exit" command to "shutdown"</p>
+        <p>✅ Added boot </p>
+        <p>⛔ improvements"</p>
     `,
 
     weather: () => `
