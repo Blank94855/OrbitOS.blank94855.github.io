@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrbitOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
 
@@ -12,7 +13,10 @@
             --md-sys-color-surface: #1a1c1e;
             --md-sys-color-surface-container: #2e3133;
             --md-sys-color-on-surface: #e2e2e5;
+            --md-sys-color-outline: #8b9198;
             --terminal-accent: #00b4d8;
+            --terminal-error: #ff4444;
+            --terminal-success: #00c853;
         }
 
         * {
@@ -22,7 +26,7 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: linear-gradient(145deg, #141517, #1a1c1e);
             color: var(--md-sys-color-on-surface);
             min-height: 100vh;
@@ -32,42 +36,7 @@
             padding: 1rem;
         }
 
-        /* Boot Screen */
-        #boot-container {
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        #progress-bar {
-            width: 100%;
-            height: 20px;
-            background-color: var(--md-sys-color-surface-container);
-            border-radius: 10px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-
-        #progress {
-            width: 0;
-            height: 100%;
-            background-color: var(--terminal-accent);
-            transition: width 0.5s ease-in-out;
-        }
-
-        .boot-message {
-            margin-bottom: 10px;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        /* Terminal */
         .terminal {
-            display: none;
             width: 95%;
             max-width: 900px;
             background-color: var(--md-sys-color-surface);
@@ -75,6 +44,7 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
                         0 2px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .terminal-header {
@@ -82,12 +52,27 @@
             padding: 0.75rem 1rem;
             display: flex;
             align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .terminal-title {
             color: var(--terminal-accent);
             font-size: 0.9rem;
             font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .control-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .output {
@@ -100,11 +85,22 @@
             font-size: 0.9rem;
         }
 
+        .output p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .highlight {
+            color: var(--terminal-accent);
+            font-weight: 500;
+        }
+
         .command {
             display: flex;
             align-items: center;
             padding: 1rem 1.5rem;
             background-color: var(--md-sys-color-surface-container);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #prompt {
@@ -123,35 +119,73 @@
             width: 100%;
             outline: none;
         }
+
+        .input-field::placeholder {
+            color: var(--md-sys-color-outline);
+            opacity: 0.7;
+        }
+
+        
+        .output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .output::-webkit-scrollbar-track {
+            background: var(--md-sys-color-surface);
+        }
+
+        .output::-webkit-scrollbar-thumb {
+            background: var(--md-sys-color-outline);
+            border-radius: 4px;
+        }
+
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .terminal {
+                width: 100%;
+                height: 100vh;
+                border-radius: 8px;
+            }
+
+            .output {
+                font-size: 0.85rem;
+                padding: 1rem;
+                max-height: calc(100vh - 120px);
+            }
+
+            .command {
+                padding: 0.75rem 1rem;
+            }
+
+            #prompt {
+                font-size: 0.85rem;
+            }
+
+            .input-field {
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Boot Screen -->
-    <div id="boot-container">
-        <h1>OrbitOS</h1>
-        <div id="messages">
-            <p class="boot-message">Initializing system...</p>
-            <p class="boot-message">Loading kernel modules...</p>
-            <p class="boot-message">Mounting filesystems...</p>
-            <p class="boot-message">Starting system services...</p>
-            <p class="boot-message">Preparing user environment...</p>
-        </div>
-        <div id="progress-bar">
-            <div id="progress"></div>
-        </div>
-    </div>
-
-    <!-- Terminal -->
-    <div class="terminal" id="terminal">
-
+    <div class="terminal">
         <div class="terminal-header">
+            <div class="terminal-controls">
+                <div class="control-dot"></div>
+                <div class="control-dot"></div>
+                <div class="control-dot"></div>
+            </div>
             <span class="terminal-title">OrbitOS Terminal</span>
         </div>
 
         <div class="output" id="output">
             <p>Welcome to OrbitOS</p>
             <p>Type 'help' for a list of commands</p>
-            <p class="highlight">Security patch: 1 March 2025</p>
+            <p class="highlight">Security patch: 1 January 2025</p>
         </div>
 
         <div class="command">
@@ -159,57 +193,6 @@
             <input id="input" class="input-field" type="text" autofocus placeholder="Type a command...">
         </div>
     </div>
-
-    <script>
-        const messages = document.querySelectorAll('.boot-message');
-        const progress = document.getElementById('progress');
-        const bootContainer = document.getElementById('boot-container');
-        const terminal = document.getElementById('terminal');
-        const inputField = document.getElementById('input');
-        const output = document.getElementById('output');
-
-        function showMessage(index) {
-            if (index < messages.length) {
-                messages[index].style.opacity = '1';
-                progress.style.width = `${(index + 1) * 20}%`;
-            }
-        }
-
-        function startBootSequence() {
-            messages.forEach(msg => msg.style.opacity = '0');
-            progress.style.width = '0';
-
-            messages.forEach((msg, index) => {
-                setTimeout(() => {
-                    showMessage(index);
-                }, (index + 1) * 1000);
-            });
-
-            setTimeout(() => {
-                bootContainer.style.display = 'none';
-                terminal.style.display = 'block';
-                inputField.focus();
-            }, 6000);
-        }
-
-        // Command handling
-        function handleCommand(command) {
-            const response = document.createElement('p');
-            response.textContent = `Command not found: ${command}`;
-            output.appendChild(response);
-        }
-
-        inputField.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                const command = inputField.value.trim();
-                inputField.value = '';  // Clear input field
-                handleCommand(command);
-                output.scrollTop = output.scrollHeight;  // Scroll to bottom
-            }
-        });
-
-        window.onload = startBootSequence;
-    </script>
-<script src="script.js"></script> 
+    <script src="script.js"></script>
 </body>
 </html>
