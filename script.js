@@ -142,7 +142,7 @@ const commands = {
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
         <p>✅ Added boot </p>
-        <p>⛔ improvements"</p>
+        <p>⛔ System improvements</p>
     `,
 
     weather: () => `
@@ -218,7 +218,7 @@ function scrollToBottom() {
     output.scrollTop = output.scrollHeight;
 }
 
-// Modify the initial page load to include boot sequence
+
 window.addEventListener('DOMContentLoaded', async () => {
     await simulateBootSequence();
     finalizeBootSequence();
