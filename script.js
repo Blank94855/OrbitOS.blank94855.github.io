@@ -2,6 +2,7 @@ const output = document.getElementById('output');
 const inputField = document.getElementById('input');
 const prompt = document.getElementById('prompt');
 
+let isSystemBricked = false;
 
 const bootSequence = [
     "Initializing OS...",
@@ -20,19 +21,17 @@ const bootSequence = [
 ];
 
 function simulateBootSequence() {
+    isSystemBricked = false;
+    inputField.disabled = true;
+    prompt.style.display = 'none';
+    output.innerHTML = '';
     return new Promise((resolve) => {
-        output.innerHTML = '';
-
         bootSequence.forEach((message, index) => {
             setTimeout(() => {
                 const progressElement = document.createElement('p');
                 progressElement.innerHTML = `<span class="highlight">[${index + 1}/${bootSequence.length}]</span> ${message}`;
                 output.appendChild(progressElement);
-
-
                 output.scrollTop = output.scrollHeight;
-
-
                 if (index === bootSequence.length - 1) {
                     setTimeout(resolve, 500);
                 }
@@ -48,6 +47,10 @@ function finalizeBootSequence() {
         <p>Type 'help' for a list of commands</p>
         <p class="highlight">Security patch: 1 April 2025</p>
     `;
+    inputField.disabled = false;
+    prompt.style.display = 'inline';
+    inputField.focus();
+    prompt.textContent = `${config.username}@${config.hostname}:~$`;
 }
 
 let commandHistory = [];
@@ -72,20 +75,11 @@ const config = {
 const terminalSites = {
     'notavirus.zip': `
         <p class="highlight">--- notavirus.zip ---</p>
-        <p>Scanning contents...</p>
-        <p>...</p>
-        <p>Definitely not a virus. Contents:</p>
+        <p>Contents seem... suspicious. Handle with care.</p>
         <p>  - totally_safe.exe</p>
         <p>  - free_money.txt</p>
         <p>  - instructions.rtf</p>
-        <p class="highlight">Scan complete. No threats detected (probably).</p>
-    `,
-    'google.term': `
-        <p><span class="highlight">Google.term Search</span></p>
-        <p>----------------------</p>
-        <p>Enter search query:</p>
-        <p> [____________________]</p>
-        <p>(Search functionality not implemented in this simulation)</p>
+        <p class="highlight">Use 'run [filename]' to execute.</p>
     `,
     'news.orb': `
         <p><span class="highlight">OrbitOS News Feed</span></p>
@@ -94,7 +88,7 @@ const terminalSites = {
         <p>- New 'browser' command added!.</p>
         <p>- Weather in Terminal City: Still clear.</p>
         <p>- Local cat discovers infinite treat loop.</p>
-        `,  
+        `,
     'about.os': `
         <p><span class="highlight">About OrbitOS</span></p>
         <p>Version: ${config.systemInfo.version}</p>
@@ -104,6 +98,33 @@ const terminalSites = {
     `
 };
 
+const maliciousFiles = ['totally_safe.exe', 'free_money.txt', 'instructions.rtf'];
+
+function generateChaoticOutput() {
+    let text = '';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+    for (let i = 0; i < 50; i++) {
+        for (let j = 0; j < 80; j++) {
+            text += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        text += '\n';
+    }
+    return `<pre class="error">${text}</pre>`;
+}
+
+function triggerSystemBrick() {
+    isSystemBricked = true;
+    inputField.disabled = true;
+    prompt.style.display = 'none';
+
+    const brickMessage = document.createElement('p');
+    brickMessage.innerHTML = `<span class="highlight error">[!!! KERNEL PANIC !!!]</span><br>System integrity compromised. Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted. Please reboot your physical machine.`;
+    brickMessage.style.color = '#ff6b6b';
+    brickMessage.style.fontWeight = 'bold';
+    output.appendChild(brickMessage);
+    scrollToBottom();
+}
+
 
 const commands = {
     help: () => `
@@ -112,6 +133,7 @@ const commands = {
         <p>clear          - Clears the terminal screen</p>
         <p>echo [text]    - Prints the specified text</p>
         <p>ls             - Lists files in current directory</p>
+        <p>run [filename] - Executes a specified file (if runnable)</p>
         <p>date           - Shows current date and time</p>
         <p>neofetch       - Displays system information</p>
         <p>whoami         - Shows current user</p>
@@ -121,15 +143,17 @@ const commands = {
         <p>weather        - Shows weather information</p>
         <p>processes      - Lists running processes</p>
         <p>calc [expr]    - Calculate mathematical expression</p>
-        <p>browser [site] - Access predefined terminal websites</p> <p>shutdown       - Shutsdown OrbitOS</p>
-    `, 
+        <p>browser [site] - Access predefined terminal websites</p>
+        <p>shutdown       - Shutsdown OrbitOS</p>
+        <p>reboot         - Reboots OrbitOS</p>
+    `,
 
     clear: () => {
         output.innerHTML = '';
-        return ''; 
+        return '';
     },
 
-    echo: (args) => args ? `<p>${args}</p>` : '<p>Nothing to echo.</p>', // Wrap in <p> for consistency
+    echo: (args) => args ? `<p>${args}</p>` : '<p>Nothing to echo.</p>',
 
     ls: () => `
         <p class="highlight">Current directory contents:</p>
@@ -138,9 +162,25 @@ const commands = {
         <p>📁 Pictures/</p>
         <p>📄 system.log</p>
         <p>📄 readme.md</p>
+        <p>📄 notavirus.zip (Use browser to view contents)</p>
     `,
 
-    date: () => `<p>${new Date().toLocaleString()}</p>`, // Wrap in <p>
+    run: (args) => {
+        const filename = args.trim();
+        if (!filename) {
+            return '<p>Usage: run [filename]</p>';
+        }
+
+        if (maliciousFiles.includes(filename)) {
+            setTimeout(triggerSystemBrick, 1500);
+            return generateChaoticOutput() + `<p class="highlight">Executing ${filename}...</p>`;
+        } else {
+            return `<p>Error: File '${filename}' not found or cannot be executed.</p>`;
+        }
+    },
+
+
+    date: () => `<p>${new Date().toLocaleString()}</p>`,
 
     neofetch: () => `
         <pre class="highlight">
@@ -166,7 +206,7 @@ const commands = {
 
     whoami: () => `<p class="highlight">${config.username}@${config.hostname}</p>`,
 
-    history: () => commandHistory.map((cmd, i) => `<p>${i + 1}. ${cmd}</p>`).join('') || '<p>No command history yet.</p>', // Handle empty history
+    history: () => commandHistory.map((cmd, i) => `<p>${i + 1}. ${cmd}</p>`).join('') || '<p>No command history yet.</p>',
 
     battery: () => `
         <p>Battery Status:</p>
@@ -177,8 +217,9 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>Orbit OS 3.1 is here.   .</p>
+        <p>Orbit OS 3.1 is here.</p>
         <p>✅ Added 'browser' command.</p>
+        <p>✅ Added 'run' command and system instability simulation.</p>
         <p>⛔ System improvements.</p>
     `,
 
@@ -199,56 +240,62 @@ const commands = {
 
     shutdown: () => {
         const response = '<p>Shutting down...</p>';
+        isSystemBricked = true;
+        inputField.disabled = true;
+        prompt.style.display = 'none';
         setTimeout(() => {
-            
-            document.body.innerHTML = '<p style="color: #ccc; font-family: monospace;">System halted.</p>';
+            document.body.innerHTML = '<p style="color: #ccc; font-family: monospace; text-align: center; margin-top: 50px;">System halted.</p>';
         }, 1000);
         return response;
+    },
+
+     reboot: async () => {
+        output.innerHTML = '<p>Rebooting system...</p>';
+        inputField.disabled = true;
+        prompt.style.display = 'none';
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        await simulateBootSequence();
+        finalizeBootSequence();
+        return '';
     },
 
     calc: (args) => {
         try {
             if (!args) return "<p>Usage: calc [expression]</p>";
-            
             const safeArgs = args.replace(/[^-()\d/*+.]/g, '');
             if (!safeArgs) return `<p>Error: Invalid characters in expression</p>`;
-            
             const result = new Function(`return ${safeArgs}`)();
             return `<p>Result: ${result}</p>`;
         } catch (error) {
-            console.error("Calc Error:", error); 
+            console.error("Calc Error:", error);
             return `<p>Error: Invalid expression or calculation failed</p>`;
         }
     },
 
-    
     browser: (args) => {
         const siteName = args.trim();
         if (!siteName) {
-            return `<p>Usage: browser [site_name]</p><p>Available sites: ${Object.keys(terminalSites).join(', ')}</p>`;
+             const availableSites = Object.keys(terminalSites).join(', ');
+            return `<p>Usage: browser [site_name]</p><p>Available sites: ${availableSites || 'None'}</p>`;
         }
 
         const siteContent = terminalSites[siteName];
 
         if (siteContent) {
-            
-            let output = `<p>Connecting to ${siteName}...</p>`;
-            output += `<p>Loading content...</p>`;
-            output += siteContent; 
-            return output;
+            let browserOutput = `<p>Connecting to ${siteName}...</p>`;
+            browserOutput += `<p>Loading content...</p>`;
+            browserOutput += siteContent;
+            return browserOutput;
         } else {
             return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;
         }
     },
-    
-
 };
 
 function getUptime() {
     const now = new Date();
-    
     const boot = new Date(config.lastBootTime);
-    const diff = now - boot; 
+    const diff = now - boot;
 
     if (isNaN(diff) || diff < 0) {
         return 'Calculating...';
@@ -267,39 +314,45 @@ function getUptime() {
     if (days > 0) uptimeString += `${days} day(s) `;
     if (hours > 0) uptimeString += `${hours} hour(s) `;
     if (minutes > 0) uptimeString += `${minutes} minute(s) `;
-    
 
     return uptimeString.trim() || 'Just booted';
 }
 
 
 function executeCommand(input) {
+     if (isSystemBricked) {
+        return '<p style="color: #ff6b6b;">System unresponsive.</p>';
+    }
+
     const trimmedInput = input.trim();
     if (!trimmedInput) {
         return '';
     }
 
     const [command, ...args] = trimmedInput.split(' ');
-    const lowerCaseCommand = command.toLowerCase(); 
-    const outputResult = commands[lowerCaseCommand]
-        ? commands[lowerCaseCommand](args.join(' '))
-        : `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
+    const lowerCaseCommand = command.toLowerCase();
+    const commandFunction = commands[lowerCaseCommand];
 
-    
-    if (commands[lowerCaseCommand] || trimmedInput) {
-       if (commandHistory[commandHistory.length - 1] !== trimmedInput) { 
-           commandHistory.push(trimmedInput);
-       }
-       historyIndex = commandHistory.length; 
+     let outputResult;
+    if (typeof commandFunction === 'function') {
+        outputResult = commandFunction(args.join(' '));
+    } else {
+         outputResult = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
     }
 
+
+    if (trimmedInput) {
+       if (commandHistory[commandHistory.length - 1] !== trimmedInput) {
+           commandHistory.push(trimmedInput);
+       }
+       historyIndex = commandHistory.length;
+    }
 
     return outputResult;
 }
 
 function displayResponse(input) {
     const commandDiv = document.createElement('div');
-    
     const promptSpan = document.createElement('span');
     promptSpan.className = 'highlight';
     promptSpan.textContent = prompt.textContent;
@@ -312,16 +365,17 @@ function displayResponse(input) {
 
     output.appendChild(commandDiv);
 
-    const responseDiv = document.createElement('div');
-    
-    responseDiv.innerHTML = executeCommand(input);
-    
-    if (responseDiv.innerHTML.includes('Error') || responseDiv.innerHTML.includes('not found')) {
-       responseDiv.classList.add('error-message');
+    const response = executeCommand(input);
+
+    if (response) {
+        const responseDiv = document.createElement('div');
+        responseDiv.innerHTML = response;
+
+        if (response.includes('Error') || response.includes('not found') || response.includes('KERNEL PANIC')) {
+           responseDiv.classList.add('error-message');
+        }
+        output.appendChild(responseDiv);
     }
-     if (responseDiv.innerHTML) {
-       output.appendChild(responseDiv);
-     }
 
 
     scrollToBottom();
@@ -329,7 +383,6 @@ function displayResponse(input) {
 }
 
 function scrollToBottom() {
-    
     setTimeout(() => {
          output.scrollTop = output.scrollHeight;
     }, 0);
@@ -337,32 +390,29 @@ function scrollToBottom() {
 
 
 window.addEventListener('DOMContentLoaded', async () => {
-    inputField.disabled = true; 
-    prompt.style.display = 'none'; 
     await simulateBootSequence();
     finalizeBootSequence();
-    inputField.disabled = false; 
-    prompt.style.display = 'inline'; 
-    inputField.focus();
-    prompt.textContent = `${config.username}@${config.hostname}:~$`;
 });
 
 inputField.addEventListener('keydown', function (event) {
+    if (isSystemBricked) {
+        event.preventDefault();
+        return;
+    }
+
     if (event.key === 'Enter') {
         event.preventDefault();
         const input = inputField.value.trim();
-        
         if (input) {
             displayResponse(input);
         } else {
-           
             const commandDiv = document.createElement('div');
             commandDiv.innerHTML = `<p><span class="highlight">${prompt.textContent}</span> </p>`;
             output.appendChild(commandDiv);
             scrollToBottom();
         }
-        inputField.value = ''; 
-        historyIndex = commandHistory.length; 
+        inputField.value = '';
+        historyIndex = commandHistory.length;
     } else if (event.key === 'ArrowUp') {
         event.preventDefault();
         if (commandHistory.length > 0) {
@@ -370,7 +420,6 @@ inputField.addEventListener('keydown', function (event) {
                 historyIndex--;
             }
             inputField.value = commandHistory[historyIndex];
-            
             inputField.setSelectionRange(inputField.value.length, inputField.value.length);
         }
     } else if (event.key === 'ArrowDown') {
@@ -379,10 +428,8 @@ inputField.addEventListener('keydown', function (event) {
             if (historyIndex < commandHistory.length - 1) {
                 historyIndex++;
                 inputField.value = commandHistory[historyIndex];
-                 
                 inputField.setSelectionRange(inputField.value.length, inputField.value.length);
             } else {
-                
                 historyIndex = commandHistory.length;
                 inputField.value = '';
             }
@@ -390,10 +437,8 @@ inputField.addEventListener('keydown', function (event) {
     }
 });
 
-
 document.querySelector('.terminal').addEventListener('click', (e) => {
-    
-    if (e.target !== inputField) {
+    if (!isSystemBricked && e.target !== inputField) {
       inputField.focus();
     }
 });
