@@ -21,18 +21,18 @@ const bootSequence = [
 
 function simulateBootSequence() {
     return new Promise((resolve) => {
-        output.innerHTML = ''; 
-        
+        output.innerHTML = '';
+
         bootSequence.forEach((message, index) => {
             setTimeout(() => {
                 const progressElement = document.createElement('p');
                 progressElement.innerHTML = `<span class="highlight">[${index + 1}/${bootSequence.length}]</span> ${message}`;
                 output.appendChild(progressElement);
-                
-                
+
+
                 output.scrollTop = output.scrollHeight;
-                
-                
+
+
                 if (index === bootSequence.length - 1) {
                     setTimeout(resolve, 500);
                 }
@@ -42,11 +42,11 @@ function simulateBootSequence() {
 }
 
 function finalizeBootSequence() {
-    output.innerHTML = ''; 
+    output.innerHTML = '';
     output.innerHTML = `
         <p>Welcome to <span class="highlight">OrbitOS</span></p>
         <p>Type 'help' for a list of commands</p>
-        <p class="highlight">Security patch: 1 March 2025</p>
+        <p class="highlight">Security patch: 1 April 2025</p>
     `;
 }
 
@@ -56,11 +56,11 @@ let historyIndex = -1;
 const config = {
     username: 'root',
     hostname: 'orbit',
-    version: '3.0.2',
+    version: '3.1',
     lastBootTime: new Date().toLocaleString(),
     systemInfo: {
         os: 'OrbitOS',
-        version: '3.0.2 - beta',
+        version: '3.1 - beta',
         kernel: '5.4.1-1059-gcp',
         architecture: 'x86_64',
         memory: '4.0GiB',
@@ -69,31 +69,67 @@ const config = {
     },
 };
 
+const terminalSites = {
+    'notavirus.zip': `
+        <p class="highlight">--- notavirus.zip ---</p>
+        <p>Scanning contents...</p>
+        <p>...</p>
+        <p>Definitely not a virus. Contents:</p>
+        <p>  - totally_safe.exe</p>
+        <p>  - free_money.txt</p>
+        <p>  - instructions.rtf</p>
+        <p class="highlight">Scan complete. No threats detected (probably).</p>
+    `,
+    'google.term': `
+        <p><span class="highlight">Google.term Search</span></p>
+        <p>----------------------</p>
+        <p>Enter search query:</p>
+        <p> [____________________]</p>
+        <p>(Search functionality not implemented in this simulation)</p>
+    `,
+    'news.orb': `
+        <p><span class="highlight">OrbitOS News Feed</span></p>
+        <p>-------------------</p>
+        <p>- OrbitOS version 3.1 is here.</p>
+        <p>- New 'browser' command added!.</p>
+        <p>- Weather in Terminal City: Still clear.</p>
+        <p>- Local cat discovers infinite treat loop.</p>
+        `,  
+    'about.os': `
+        <p><span class="highlight">About OrbitOS</span></p>
+        <p>Version: ${config.systemInfo.version}</p>
+        <p>Kernel: ${config.systemInfo.kernel}</p>
+        <p>A lightweight, terminal-focused operating system simulation.</p>
+        <p>Developed for fun and learning.</p>
+    `
+};
+
+
 const commands = {
     help: () => `
         <p><span class="highlight">Available Commands:</span></p>
         <p>help           - Shows this help message</p>
         <p>clear          - Clears the terminal screen</p>
         <p>echo [text]    - Prints the specified text</p>
-        <p>ls            - Lists files in current directory</p>
-        <p>date          - Shows current date and time</p>
-        <p>neofetch      - Displays system information</p>
-        <p>whoami        - Shows current user</p>
-        <p>history       - Shows command history</p>
-        <p>battery       - Shows battery status</p>
-        <p>software      - Shows system changelog</p>
-        <p>weather       - Shows weather information</p>
-        <p>processes     - Lists running processes</p>
-        <p>shutdown      - Shutsdown OrbitOS</p>
-        <p>calc          - Calculate something</p>
-    `,
+        <p>ls             - Lists files in current directory</p>
+        <p>date           - Shows current date and time</p>
+        <p>neofetch       - Displays system information</p>
+        <p>whoami         - Shows current user</p>
+        <p>history        - Shows command history</p>
+        <p>battery        - Shows battery status</p>
+        <p>software       - Shows system changelog</p>
+        <p>weather        - Shows weather information</p>
+        <p>processes      - Lists running processes</p>
+        <p>calc [expr]    - Calculate mathematical expression</p>
+        <p>browser [site] - Access predefined terminal websites</p> <p>shutdown       - Shutsdown OrbitOS</p>
+    `, 
 
     clear: () => {
         output.innerHTML = '';
-        return 'Terminal cleared.';
+        return ''; 
     },
 
-    echo: (args) => args || 'Nothing to echo.',
+    echo: (args) => args ? `<p>${args}</p>` : '<p>Nothing to echo.</p>', // Wrap in <p> for consistency
 
     ls: () => `
         <p class="highlight">Current directory contents:</p>
@@ -104,19 +140,19 @@ const commands = {
         <p>📄 readme.md</p>
     `,
 
-    date: () => new Date().toLocaleString(),
+    date: () => `<p>${new Date().toLocaleString()}</p>`, // Wrap in <p>
 
     neofetch: () => `
         <pre class="highlight">
           /\\
-                /  \\
-               /    \\
-              /      \\
-             /   ◢◤   \\
-            /    ||    \\
-           /     ||     \\
-          /      ||      \\
-         /________________\\
+         /  \\
+        /    \\
+       /      \\
+      /   ◢◤   \\
+     /    ||    \\
+    /     ||     \\
+   /      ||      \\
+  /________________\\
         </pre>
         <p><span class="highlight">${config.systemInfo.os}</span>@${config.username}</p>
         <p>-----------------</p>
@@ -130,7 +166,7 @@ const commands = {
 
     whoami: () => `<p class="highlight">${config.username}@${config.hostname}</p>`,
 
-    history: () => commandHistory.map((cmd, i) => `<p>${i + 1}. ${cmd}</p>`).join(''),
+    history: () => commandHistory.map((cmd, i) => `<p>${i + 1}. ${cmd}</p>`).join('') || '<p>No command history yet.</p>', // Handle empty history
 
     battery: () => `
         <p>Battery Status:</p>
@@ -141,8 +177,9 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>✅ Added boot </p>
-        <p>⛔ System improvements</p>
+        <p>Orbit OS 3.1 is here.   .</p>
+        <p>✅ Added 'browser' command.</p>
+        <p>⛔ System improvements.</p>
     `,
 
     weather: () => `
@@ -161,93 +198,202 @@ const commands = {
     `,
 
     shutdown: () => {
-        const response = 'Shutting down...';
+        const response = '<p>Shutting down...</p>';
         setTimeout(() => {
-            window.close();
+            
+            document.body.innerHTML = '<p style="color: #ccc; font-family: monospace;">System halted.</p>';
         }, 1000);
         return response;
     },
 
     calc: (args) => {
         try {
-            if (!args) return "Usage: calc [expression]";
-            const result = eval(args.replace(/[^-()\d/*+.]/g, ''));
+            if (!args) return "<p>Usage: calc [expression]</p>";
+            
+            const safeArgs = args.replace(/[^-()\d/*+.]/g, '');
+            if (!safeArgs) return `<p>Error: Invalid characters in expression</p>`;
+            
+            const result = new Function(`return ${safeArgs}`)();
             return `<p>Result: ${result}</p>`;
         } catch (error) {
-            return `<p>Error: Invalid expression</p>`;
+            console.error("Calc Error:", error); 
+            return `<p>Error: Invalid expression or calculation failed</p>`;
         }
     },
+
+    
+    browser: (args) => {
+        const siteName = args.trim();
+        if (!siteName) {
+            return `<p>Usage: browser [site_name]</p><p>Available sites: ${Object.keys(terminalSites).join(', ')}</p>`;
+        }
+
+        const siteContent = terminalSites[siteName];
+
+        if (siteContent) {
+            
+            let output = `<p>Connecting to ${siteName}...</p>`;
+            output += `<p>Loading content...</p>`;
+            output += siteContent; 
+            return output;
+        } else {
+            return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;
+        }
+    },
+    
+
 };
 
 function getUptime() {
     const now = new Date();
+    
     const boot = new Date(config.lastBootTime);
-    const diff = now - boot;
-    const minutes = Math.floor(diff / 60000);
-    return `${minutes} minutes`;
-}
+    const diff = now - boot; 
 
-function executeCommand(input) {
-    const [command, ...args] = input.trim().toLowerCase().split(' ');
-    const output = commands[command]
-        ? commands[command](args.join(' '))
-        : `Command not found: ${command}. Type 'help' for available commands.`;
-
-    if (command) {
-        commandHistory.push(input);
-        historyIndex = commandHistory.length;
+    if (isNaN(diff) || diff < 0) {
+        return 'Calculating...';
     }
 
-    return output;
+    let seconds = Math.floor(diff / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+    let days = Math.floor(hours / 24);
+
+    hours %= 24;
+    minutes %= 60;
+    seconds %= 60;
+
+    let uptimeString = '';
+    if (days > 0) uptimeString += `${days} day(s) `;
+    if (hours > 0) uptimeString += `${hours} hour(s) `;
+    if (minutes > 0) uptimeString += `${minutes} minute(s) `;
+    
+
+    return uptimeString.trim() || 'Just booted';
+}
+
+
+function executeCommand(input) {
+    const trimmedInput = input.trim();
+    if (!trimmedInput) {
+        return '';
+    }
+
+    const [command, ...args] = trimmedInput.split(' ');
+    const lowerCaseCommand = command.toLowerCase(); 
+    const outputResult = commands[lowerCaseCommand]
+        ? commands[lowerCaseCommand](args.join(' '))
+        : `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
+
+    
+    if (commands[lowerCaseCommand] || trimmedInput) {
+       if (commandHistory[commandHistory.length - 1] !== trimmedInput) { 
+           commandHistory.push(trimmedInput);
+       }
+       historyIndex = commandHistory.length; 
+    }
+
+
+    return outputResult;
 }
 
 function displayResponse(input) {
     const commandDiv = document.createElement('div');
-    commandDiv.innerHTML = `<p><span class="highlight">${prompt.textContent}</span> ${input}</p>`;
+    
+    const promptSpan = document.createElement('span');
+    promptSpan.className = 'highlight';
+    promptSpan.textContent = prompt.textContent;
+    const commandText = document.createTextNode(` ${input}`);
+
+    const commandPara = document.createElement('p');
+    commandPara.appendChild(promptSpan);
+    commandPara.appendChild(commandText);
+    commandDiv.appendChild(commandPara);
+
     output.appendChild(commandDiv);
 
     const responseDiv = document.createElement('div');
+    
     responseDiv.innerHTML = executeCommand(input);
-    output.appendChild(responseDiv);
+    
+    if (responseDiv.innerHTML.includes('Error') || responseDiv.innerHTML.includes('not found')) {
+       responseDiv.classList.add('error-message');
+    }
+     if (responseDiv.innerHTML) {
+       output.appendChild(responseDiv);
+     }
+
 
     scrollToBottom();
     inputField.value = '';
 }
 
 function scrollToBottom() {
-    output.scrollTop = output.scrollHeight;
+    
+    setTimeout(() => {
+         output.scrollTop = output.scrollHeight;
+    }, 0);
 }
 
 
 window.addEventListener('DOMContentLoaded', async () => {
+    inputField.disabled = true; 
+    prompt.style.display = 'none'; 
     await simulateBootSequence();
     finalizeBootSequence();
+    inputField.disabled = false; 
+    prompt.style.display = 'inline'; 
+    inputField.focus();
+    prompt.textContent = `${config.username}@${config.hostname}:~$`;
 });
 
 inputField.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
+        event.preventDefault();
         const input = inputField.value.trim();
+        
         if (input) {
             displayResponse(input);
+        } else {
+           
+            const commandDiv = document.createElement('div');
+            commandDiv.innerHTML = `<p><span class="highlight">${prompt.textContent}</span> </p>`;
+            output.appendChild(commandDiv);
+            scrollToBottom();
         }
+        inputField.value = ''; 
+        historyIndex = commandHistory.length; 
     } else if (event.key === 'ArrowUp') {
         event.preventDefault();
-        if (historyIndex > 0) {
-            historyIndex--;
+        if (commandHistory.length > 0) {
+            if (historyIndex > 0) {
+                historyIndex--;
+            }
             inputField.value = commandHistory[historyIndex];
+            
+            inputField.setSelectionRange(inputField.value.length, inputField.value.length);
         }
     } else if (event.key === 'ArrowDown') {
         event.preventDefault();
-        if (historyIndex < commandHistory.length - 1) {
-            historyIndex++;
-            inputField.value = commandHistory[historyIndex];
-        } else {
-            historyIndex = commandHistory.length;
-            inputField.value = '';
+        if (commandHistory.length > 0) {
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                inputField.value = commandHistory[historyIndex];
+                 
+                inputField.setSelectionRange(inputField.value.length, inputField.value.length);
+            } else {
+                
+                historyIndex = commandHistory.length;
+                inputField.value = '';
+            }
         }
     }
 });
 
-document.querySelector('.terminal').addEventListener('click', () => {
-    inputField.focus();
+
+document.querySelector('.terminal').addEventListener('click', (e) => {
+    
+    if (e.target !== inputField) {
+      inputField.focus();
+    }
 });
