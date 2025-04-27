@@ -59,11 +59,11 @@ let historyIndex = -1;
 const config = {
     username: 'root',
     hostname: 'orbit',
-    version: '3.1',
+    version: '3.2',
     lastBootTime: new Date().toLocaleString(),
     systemInfo: {
         os: 'OrbitOS',
-        version: '3.1 - beta',
+        version: '3.2 - beta',
         kernel: '5.4.1-1059-gcp',
         architecture: 'x86_64',
         memory: '4.0GiB',
@@ -150,40 +150,40 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
     }
 }
 
-// Generate weather data once when the page loads and store it
+
 let currentWeatherData = null;
 
 function generateRandomWeather() {
-    // If we already have weather data for this session, return it
+    
     if (currentWeatherData) {
         return currentWeatherData;
     }
     
-    // Select random location
+    
     const locationIndex = Math.floor(Math.random() * config.weatherInfo.locations.length);
     const location = config.weatherInfo.locations[locationIndex];
     
-    // Generate random temperature (between -10 and 40°C)
+    
     const temperature = Math.floor(Math.random() * 51) - 10;
     
-    // Select random condition
+    
     const conditionIndex = Math.floor(Math.random() * config.weatherInfo.conditions.length);
     const condition = config.weatherInfo.conditions[conditionIndex];
     
-    // Generate random humidity (between 20% and 95%)
+    
     const humidity = Math.floor(Math.random() * 76) + 20;
     
-    // Generate random wind speed (between 0 and 50 km/h)
+    
     const windSpeed = Math.floor(Math.random() * 51);
     
-    // Select random precipitation type
+    
     const precipIndex = Math.floor(Math.random() * config.weatherInfo.precipitationTypes.length);
     const precipitation = config.weatherInfo.precipitationTypes[precipIndex];
     
-    // Generate random precipitation chance (between 0% and 100%)
+    
     const precipChance = Math.floor(Math.random() * 101);
     
-    // Store the generated weather data
+    
     currentWeatherData = {
         location,
         temperature,
@@ -209,10 +209,9 @@ const terminalSites = {
     'news.orb': `
         <p><span class="highlight">OrbitOS News Feed</span></p>
         <p>-------------------</p>
-        <p>- OrbitOS version 3.1 is here.</p>
-        <p>- New 'browser' command added!.</p>
-        <p>- Weather command now shows global conditions.</p>
-        <p>- Local cat discovers infinite treat loop.</p>
+        <p>- OrbitOS version 3.2 is here.</p>
+        <p>- Battery & weather is now dynamic!.</p>
+        
         `,
     'about.os': `
         <p><span class="highlight">About OrbitOS</span></p>
@@ -348,11 +347,8 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>Orbit OS 3.1 is here.</p>
-        <p>✅ Added 'browser' command.</p>
-        <p>✅ Added 'run' command and system instability simulation.</p>
-        <p>✅ Added dynamic battery indicator for system status.</p>
-        <p>✅ Enhanced weather command with global locations and dynamic data.</p>
+        <p>Orbit OS 3.3 is here.</p>
+        <p>✅ Battery & weather are now dynamic!</p>
         <p>⛔ System improvements.</p>
     `,
 
@@ -531,11 +527,11 @@ function scrollToBottom() {
 
 
 window.addEventListener('DOMContentLoaded', async () => {
-    // Initialize random values on page load
+    
     config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
     config.batteryInfo.charging = Math.random() > 0.5;
     
-    // Initialize weather data for the session
+    
     generateRandomWeather();
 
     await simulateBootSequence();
