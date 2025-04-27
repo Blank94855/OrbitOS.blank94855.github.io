@@ -70,7 +70,7 @@ const config = {
         disk: '1.0GiB',
         processes: 3,
     },
-    
+
     batteryInfo: {
         percentage: Math.floor(Math.random() * 100) + 1, // 1-100%
         charging: Math.random() > 0.5 
@@ -80,28 +80,28 @@ const config = {
 
 function generateBatteryTimeRemaining(percentage, isCharging) {
     if (isCharging) {
-        // If charging, estimate time until full
+        
         const remainingPercentage = 100 - percentage;
         const minutesPerPercent = Math.floor(Math.random() * 2) + 1; // 1-2 minutes per percent
         const totalMinutes = remainingPercentage * minutesPerPercent;
-        
+
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
-        
+
         if (percentage === 100) {
             return "Fully charged";
         } else {
             return `${hours}h ${minutes}m until full`;
         }
     } else {
-        // If discharging, estimate time remaining
+        
         const minutesPerPercent = Math.floor(Math.random() * 10) + 5; // 5-15 minutes per percent
         const totalMinutes = percentage * minutesPerPercent;
-        
+
         const days = Math.floor(totalMinutes / (60 * 24));
         const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
         const minutes = totalMinutes % 60;
-        
+
         if (days > 0) {
             return `${days}d ${hours}h remaining`;
         } else {
@@ -250,7 +250,7 @@ const commands = {
         const percentage = config.batteryInfo.percentage;
         const isCharging = config.batteryInfo.charging;
         const timeRemaining = generateBatteryTimeRemaining(percentage, isCharging);
-        
+
         return `
             <p>Battery Status:</p>
             <p>Charge: ${percentage}%</p>
@@ -294,14 +294,12 @@ const commands = {
         return response;
     },
 
-     reboot: async () => {
+    reboot: async () => {
         output.innerHTML = '<p>Rebooting system...</p>';
         inputField.disabled = true;
         prompt.style.display = 'none';
         
         
-        config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
-        config.batteryInfo.charging = Math.random() > 0.5;
         
         await new Promise(resolve => setTimeout(resolve, 1500));
         await simulateBootSequence();
@@ -443,7 +441,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     
     config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
     config.batteryInfo.charging = Math.random() > 0.5;
-    
+
     await simulateBootSequence();
     finalizeBootSequence();
 });
