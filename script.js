@@ -150,7 +150,15 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
     }
 }
 
+// Generate weather data once when the page loads and store it
+let currentWeatherData = null;
+
 function generateRandomWeather() {
+    // If we already have weather data for this session, return it
+    if (currentWeatherData) {
+        return currentWeatherData;
+    }
+    
     // Select random location
     const locationIndex = Math.floor(Math.random() * config.weatherInfo.locations.length);
     const location = config.weatherInfo.locations[locationIndex];
@@ -175,7 +183,8 @@ function generateRandomWeather() {
     // Generate random precipitation chance (between 0% and 100%)
     const precipChance = Math.floor(Math.random() * 101);
     
-    return {
+    // Store the generated weather data
+    currentWeatherData = {
         location,
         temperature,
         condition,
@@ -184,6 +193,8 @@ function generateRandomWeather() {
         precipitation,
         precipChance
     };
+    
+    return currentWeatherData;
 }
 
 const terminalSites = {
@@ -523,6 +534,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Initialize random values on page load
     config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
     config.batteryInfo.charging = Math.random() > 0.5;
+    
+    // Initialize weather data for the session
+    generateRandomWeather();
 
     await simulateBootSequence();
     finalizeBootSequence();
