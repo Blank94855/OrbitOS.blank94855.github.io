@@ -70,7 +70,45 @@ const config = {
         disk: '1.0GiB',
         processes: 3,
     },
+    
+    batteryInfo: {
+        percentage: Math.floor(Math.random() * 100) + 1, // 1-100%
+        charging: Math.random() > 0.5 
+    }
 };
+
+
+function generateBatteryTimeRemaining(percentage, isCharging) {
+    if (isCharging) {
+        // If charging, estimate time until full
+        const remainingPercentage = 100 - percentage;
+        const minutesPerPercent = Math.floor(Math.random() * 2) + 1; // 1-2 minutes per percent
+        const totalMinutes = remainingPercentage * minutesPerPercent;
+        
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        
+        if (percentage === 100) {
+            return "Fully charged";
+        } else {
+            return `${hours}h ${minutes}m until full`;
+        }
+    } else {
+        // If discharging, estimate time remaining
+        const minutesPerPercent = Math.floor(Math.random() * 10) + 5; // 5-15 minutes per percent
+        const totalMinutes = percentage * minutesPerPercent;
+        
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minutes = totalMinutes % 60;
+        
+        if (days > 0) {
+            return `${days}d ${hours}h remaining`;
+        } else {
+            return `${hours}h ${minutes}m remaining`;
+        }
+    }
+}
 
 const terminalSites = {
     'notavirus.zip': `
@@ -118,7 +156,7 @@ function triggerSystemBrick() {
     prompt.style.display = 'none';
 
     const brickMessage = document.createElement('p');
-    brickMessage.innerHTML = `<span class="highlight error">[!!! KERNEL PANIC !!!]</span><br>System integrity compromised. Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted. Please reboot your physical machine.`;
+    brickMessage.innerHTML = `<span class="highlight error">[!!! KERNEL PANIC !!!]</span><br>System integrity compromised. Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted. Please reboot the system.`;
     brickMessage.style.color = '#ff6b6b';
     brickMessage.style.fontWeight = 'bold';
     output.appendChild(brickMessage);
@@ -208,18 +246,25 @@ const commands = {
 
     history: () => commandHistory.map((cmd, i) => `<p>${i + 1}. ${cmd}</p>`).join('') || '<p>No command history yet.</p>',
 
-    battery: () => `
-        <p>Battery Status:</p>
-        <p>Charge: 100%</p>
-        <p>Status: Not charging</p>
-        <p>Time remaining: 2d 7h</p>
-    `,
+    battery: () => {
+        const percentage = config.batteryInfo.percentage;
+        const isCharging = config.batteryInfo.charging;
+        const timeRemaining = generateBatteryTimeRemaining(percentage, isCharging);
+        
+        return `
+            <p>Battery Status:</p>
+            <p>Charge: ${percentage}%</p>
+            <p>Status: ${isCharging ? 'Charging' : 'Discharging'}</p>
+            <p>Time ${isCharging ? 'to full' : 'remaining'}: ${timeRemaining}</p>
+        `;
+    },
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
         <p>Orbit OS 3.1 is here.</p>
         <p>✅ Added 'browser' command.</p>
         <p>✅ Added 'run' command and system instability simulation.</p>
+        <p>✅ Added dynamic battery indicator for system status.</p>
         <p>⛔ System improvements.</p>
     `,
 
@@ -253,6 +298,11 @@ const commands = {
         output.innerHTML = '<p>Rebooting system...</p>';
         inputField.disabled = true;
         prompt.style.display = 'none';
+        
+        
+        config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
+        config.batteryInfo.charging = Math.random() > 0.5;
+        
         await new Promise(resolve => setTimeout(resolve, 1500));
         await simulateBootSequence();
         finalizeBootSequence();
@@ -390,6 +440,10 @@ function scrollToBottom() {
 
 
 window.addEventListener('DOMContentLoaded', async () => {
+    
+    config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
+    config.batteryInfo.charging = Math.random() > 0.5;
+    
     await simulateBootSequence();
     finalizeBootSequence();
 });
