@@ -74,13 +74,53 @@ const config = {
     batteryInfo: {
         percentage: Math.floor(Math.random() * 100) + 1, // 1-100%
         charging: Math.random() > 0.5 
+    },
+    
+    weatherInfo: {
+        locations: [
+            { city: "Tokyo", country: "Japan" },
+            { city: "London", country: "UK" },
+            { city: "New York", country: "USA" },
+            { city: "Sydney", country: "Australia" },
+            { city: "Paris", country: "France" },
+            { city: "Cairo", country: "Egypt" },
+            { city: "Rio de Janeiro", country: "Brazil" },
+            { city: "Cape Town", country: "South Africa" },
+            { city: "Moscow", country: "Russia" },
+            { city: "Singapore", country: "Singapore" },
+            { city: "Dubai", country: "UAE" },
+            { city: "Berlin", country: "Germany" },
+            { city: "Toronto", country: "Canada" },
+            { city: "Mumbai", country: "India" },
+            { city: "Seoul", country: "South Korea" }
+        ],
+        conditions: [
+            "Clear skies",
+            "Partly cloudy",
+            "Overcast",
+            "Light rain",
+            "Heavy rain",
+            "Thunderstorm",
+            "Foggy",
+            "Snowing",
+            "Sunny",
+            "Windy"
+        ],
+        precipitationTypes: [
+            "None",
+            "Drizzle",
+            "Rain",
+            "Snow",
+            "Sleet",
+            "Hail"
+        ]
     }
 };
 
 
 function generateBatteryTimeRemaining(percentage, isCharging) {
     if (isCharging) {
-        
+
         const remainingPercentage = 100 - percentage;
         const minutesPerPercent = Math.floor(Math.random() * 2) + 1; // 1-2 minutes per percent
         const totalMinutes = remainingPercentage * minutesPerPercent;
@@ -94,7 +134,7 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
             return `${hours}h ${minutes}m until full`;
         }
     } else {
-        
+
         const minutesPerPercent = Math.floor(Math.random() * 10) + 5; // 5-15 minutes per percent
         const totalMinutes = percentage * minutesPerPercent;
 
@@ -108,6 +148,42 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
             return `${hours}h ${minutes}m remaining`;
         }
     }
+}
+
+function generateRandomWeather() {
+    // Select random location
+    const locationIndex = Math.floor(Math.random() * config.weatherInfo.locations.length);
+    const location = config.weatherInfo.locations[locationIndex];
+    
+    // Generate random temperature (between -10 and 40°C)
+    const temperature = Math.floor(Math.random() * 51) - 10;
+    
+    // Select random condition
+    const conditionIndex = Math.floor(Math.random() * config.weatherInfo.conditions.length);
+    const condition = config.weatherInfo.conditions[conditionIndex];
+    
+    // Generate random humidity (between 20% and 95%)
+    const humidity = Math.floor(Math.random() * 76) + 20;
+    
+    // Generate random wind speed (between 0 and 50 km/h)
+    const windSpeed = Math.floor(Math.random() * 51);
+    
+    // Select random precipitation type
+    const precipIndex = Math.floor(Math.random() * config.weatherInfo.precipitationTypes.length);
+    const precipitation = config.weatherInfo.precipitationTypes[precipIndex];
+    
+    // Generate random precipitation chance (between 0% and 100%)
+    const precipChance = Math.floor(Math.random() * 101);
+    
+    return {
+        location,
+        temperature,
+        condition,
+        humidity,
+        windSpeed,
+        precipitation,
+        precipChance
+    };
 }
 
 const terminalSites = {
@@ -124,7 +200,7 @@ const terminalSites = {
         <p>-------------------</p>
         <p>- OrbitOS version 3.1 is here.</p>
         <p>- New 'browser' command added!.</p>
-        <p>- Weather in Terminal City: Still clear.</p>
+        <p>- Weather command now shows global conditions.</p>
         <p>- Local cat discovers infinite treat loop.</p>
         `,
     'about.os': `
@@ -265,16 +341,24 @@ const commands = {
         <p>✅ Added 'browser' command.</p>
         <p>✅ Added 'run' command and system instability simulation.</p>
         <p>✅ Added dynamic battery indicator for system status.</p>
+        <p>✅ Enhanced weather command with global locations and dynamic data.</p>
         <p>⛔ System improvements.</p>
     `,
 
-    weather: () => `
-        <p class="highlight">Current Weather:</p>
-        <p>Location: Terminal City</p>
-        <p>Temperature: 22°C</p>
-        <p>Condition: Clear skies</p>
-        <p>Humidity: 45%</p>
-    `,
+    weather: () => {
+        const weather = generateRandomWeather();
+        const { location, temperature, condition, humidity, windSpeed, precipitation, precipChance } = weather;
+        
+        return `
+            <p class="highlight">Current Weather:</p>
+            <p>Location: ${location.city}, ${location.country}</p>
+            <p>Temperature: ${temperature}°C</p>
+            <p>Condition: ${condition}</p>
+            <p>Humidity: ${humidity}%</p>
+            <p>Wind Speed: ${windSpeed} km/h</p>
+            <p>Precipitation: ${precipitation} (${precipChance}% chance)</p>
+        `;
+    },
 
     processes: () => `
         <p class="highlight">Running Processes:</p>
@@ -298,9 +382,7 @@ const commands = {
         output.innerHTML = '<p>Rebooting system...</p>';
         inputField.disabled = true;
         prompt.style.display = 'none';
-        
-        
-        
+
         await new Promise(resolve => setTimeout(resolve, 1500));
         await simulateBootSequence();
         finalizeBootSequence();
@@ -438,7 +520,7 @@ function scrollToBottom() {
 
 
 window.addEventListener('DOMContentLoaded', async () => {
-    
+    // Initialize random values on page load
     config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
     config.batteryInfo.charging = Math.random() > 0.5;
 
