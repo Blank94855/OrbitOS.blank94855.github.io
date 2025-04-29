@@ -3,6 +3,8 @@ const inputField = document.getElementById('input');
 const prompt = document.getElementById('prompt');
 
 let isSystemBricked = false;
+let terminalVisible = true;
+let stoppedProcesses = [];
 
 const bootSequence = [
     "Initializing OS...",
@@ -51,6 +53,8 @@ function finalizeBootSequence() {
     prompt.style.display = 'inline';
     inputField.focus();
     prompt.textContent = `${config.username}@${config.hostname}:~$`;
+    terminalVisible = true;
+    stoppedProcesses = [];
 }
 
 let commandHistory = [];
@@ -59,11 +63,11 @@ let historyIndex = -1;
 const config = {
     username: 'root',
     hostname: 'orbit',
-    version: '3.3',
+    version: '3.3.1',
     lastBootTime: new Date().toLocaleString(),
     systemInfo: {
         os: 'OrbitOS',
-        version: '3.3 - beta',
+        version: '3.3.1 - beta',
         kernel: '5.4.1-1059-gcp',
         architecture: 'x86_64',
         memory: '4.0GiB',
@@ -249,6 +253,32 @@ function triggerSystemBrick() {
     scrollToBottom();
 }
 
+function toggleTerminal(visible) {
+    const terminal = document.querySelector('.terminal');
+    if (terminal) {
+        if (visible) {
+            terminal.style.display = 'block';
+            terminalVisible = true;
+            inputField.focus();
+        } else {
+            terminal.style.display = 'none';
+            terminalVisible = false;
+        }
+    }
+}
+
+function systemHalt() {
+    isSystemBricked = true;
+    inputField.disabled = true;
+    prompt.style.display = 'none';
+
+    const haltMessage = document.createElement('p');
+    haltMessage.innerHTML = `<span class="highlight error">[SYSTEM HALTED]</span><br>System has been manually halted.<br>Critical process stopped.<br>System unable to continue operation.<br>Please reboot to restore functionality.`;
+    haltMessage.style.color = '#ff6b6b';
+    haltMessage.style.fontWeight = 'bold';
+    output.appendChild(haltMessage);
+    scrollToBottom();
+}
 
 const commands = {
     help: () => `
@@ -268,6 +298,7 @@ const commands = {
         <p>processes      - Lists running processes</p>
         <p>calc [expr]    - Calculate mathematical expression</p>
         <p>browser [site] - Access predefined terminal websites</p>
+        <p>stop [process] - Stop a process or component</p>
         <p>shutdown       - Shutsdown OrbitOS</p>
         <p>reboot         - Reboots OrbitOS</p>
     `,
@@ -303,6 +334,36 @@ const commands = {
         }
     },
 
+    stop: (args) => {
+        const processName = args.trim().toLowerCase();
+        
+        if (!processName) {
+            return '<p>Usage: stop [process]</p><p>Available processes: terminal, system, browser, process</p>';
+        }
+        
+        if (processName === 'terminal') {
+            toggleTerminal(false);
+            return '<p class="highlight">Terminal interface stopped. Refresh page to restore.</p>';
+        } 
+        else if (processName === 'system') {
+            setTimeout(systemHalt, 500);
+            return '<p class="highlight">WARNING: Critical system process stopping...</p>';
+        }
+        else if (processName === 'browser') {
+            if (stoppedProcesses.includes('browser')) {
+                return '<p class="error">Browser process already stopped.</p>';
+            }
+            stoppedProcesses.push('browser');
+            return '<p>Browser process stopped. "browser" command is now disabled.</p>';
+        }
+        else if (processName === 'process') {
+            const pid = Math.floor(Math.random() * 1000) + 1;
+            return `<p>Process with PID ${pid} stopped successfully.</p>`;
+        }
+        else {
+            return `<p class="error">Error: Process '${processName}' not found or cannot be stopped.</p>`;
+        }
+    },
 
     date: () => `<p>${new Date().toLocaleString()}</p>`,
 
@@ -347,8 +408,9 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>Orbit OS 3.3 is here.</p>
-        <p>✅ Battery & weather are now dynamic!</p>
+        <p>Orbit OS 3.3.1 upgrade.</p>
+        
+        <p>✅ New 'stop' command to halt processes</p>
         <p>⛔ System improvements.</p>
     `,
 
@@ -372,6 +434,8 @@ const commands = {
         <p>1. system_core    (PID: 1)</p>
         <p>2. terminal       (PID: 245)</p>
         <p>3. user_session   (PID: 892)</p>
+        ${stoppedProcesses.length > 0 ? '<p class="highlight">Stopped Processes:</p>' + 
+          stoppedProcesses.map(proc => `<p>- ${proc}</p>`).join('') : ''}
     `,
 
     shutdown: () => {
@@ -410,6 +474,10 @@ const commands = {
     },
 
     browser: (args) => {
+        if (stoppedProcesses.includes('browser')) {
+            return '<p class="error">Browser process is stopped. Use "reboot" to restore functionality.</p>';
+        }
+        
         const siteName = args.trim();
         if (!siteName) {
              const availableSites = Object.keys(terminalSites).join(', ');
@@ -508,7 +576,7 @@ function displayResponse(input) {
         const responseDiv = document.createElement('div');
         responseDiv.innerHTML = response;
 
-        if (response.includes('Error') || response.includes('not found') || response.includes('KERNEL PANIC')) {
+        if (response.includes('Error') || response.includes('not found') || response.includes('KERNEL PANIC') || response.includes('SYSTEM HALTED')) {
            responseDiv.classList.add('error-message');
         }
         output.appendChild(responseDiv);
