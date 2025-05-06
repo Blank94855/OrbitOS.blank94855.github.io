@@ -1,198 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrbitOS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
-
-        :root {
-            --md-sys-color-primary: #006399;
-            --md-sys-color-surface: #1a1c1e;
-            --md-sys-color-surface-container: #2e3133;
-            --md-sys-color-on-surface: #e2e2e5;
-            --md-sys-color-outline: #8b9198;
-            --terminal-accent: #00b4d8;
-            --terminal-error: #ff4444;
-            --terminal-success: #00c853;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(145deg, #141517, #1a1c1e);
-            color: var(--md-sys-color-on-surface);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-        }
-
-        .terminal {
-            width: 95%;
-            max-width: 900px;
-            background-color: var(--md-sys-color-surface);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
-                        0 2px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .terminal-header {
-            background-color: var(--md-sys-color-surface-container);
-            padding: 0.75rem 1rem;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .terminal-title {
-            color: var(--terminal-accent);
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-left: 0.5rem;
-        }
-
-        .terminal-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-right: 1rem;
-        }
-
-        .control-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .output {
-            font-family: 'JetBrains Mono', monospace;
-            padding: 1.5rem;
-            min-height: 60vh;
-            max-height: 70vh;
-            overflow-y: auto;
-            line-height: 1.6;
-            font-size: 0.9rem;
-        }
-
-        .output p {
-            margin-bottom: 0.5rem;
-            opacity: 0.9;
-        }
-
-        .highlight {
-            color: var(--terminal-accent);
-            font-weight: 500;
-        }
-
-        .command {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background-color: var(--md-sys-color-surface-container);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        #prompt {
-            color: var(--terminal-accent);
-            margin-right: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-        }
-
-        .input-field {
-            background-color: transparent;
-            border: none;
-            color: var(--md-sys-color-on-surface);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            width: 100%;
-            outline: none;
-        }
-
-        .input-field::placeholder {
-            color: var(--md-sys-color-outline);
-            opacity: 0.7;
-        }
-
-        
-        .output::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .output::-webkit-scrollbar-track {
-            background: var(--md-sys-color-surface);
-        }
-
-        .output::-webkit-scrollbar-thumb {
-            background: var(--md-sys-color-outline);
-            border-radius: 4px;
-        }
-
-        
-        @media (max-width: 600px) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .terminal {
-                width: 100%;
-                height: 100vh;
-                border-radius: 8px;
-            }
-
-            .output {
-                font-size: 0.85rem;
-                padding: 1rem;
-                max-height: calc(100vh - 120px);
-            }
-
-            .command {
-                padding: 0.75rem 1rem;
-            }
-
-            #prompt {
-                font-size: 0.85rem;
-            }
-
-            .input-field {
-                font-size: 0.85rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrbitOS</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1c1e" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+    :root {
+      --md-sys-color-primary: #006399;
+      --md-sys-color-surface: #1a1c1e;
+      --md-sys-color-surface-container: #2e3133;
+      --md-sys-color-on-surface: #e2e2e5;
+      --md-sys-color-outline: #8b9198;
+      --terminal-accent: #00b4d8;
+      --terminal-error: #ff4444;
+      --terminal-success: #00c853;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(145deg, #141517, #1a1c1e);
+      color: var(--md-sys-color-on-surface);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .terminal {
+      width: 95%;
+      max-width: 900px;
+      background-color: var(--md-sys-color-surface);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .terminal-header {
+      background-color: var(--md-sys-color-surface-container);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .terminal-title {
+      color: var(--terminal-accent);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    .terminal-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-right: 1rem;
+    }
+    .control-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    .output {
+      font-family: 'JetBrains Mono', monospace;
+      padding: 1.5rem;
+      min-height: 60vh;
+      max-height: 70vh;
+      overflow-y: auto;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+    .output p {
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+    .highlight {
+      color: var(--terminal-accent);
+      font-weight: 500;
+    }
+    .command {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background-color: var(--md-sys-color-surface-container);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #prompt {
+      color: var(--terminal-accent);
+      margin-right: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+    }
+    .input-field {
+      background-color: transparent;
+      border: none;
+      color: var(--md-sys-color-on-surface);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      width: 100%;
+      outline: none;
+    }
+    .input-field::placeholder {
+      color: var(--md-sys-color-outline);
+      opacity: 0.7;
+    }
+    .output::-webkit-scrollbar {
+      width: 8px;
+    }
+    .output::-webkit-scrollbar-track {
+      background: var(--md-sys-color-surface);
+    }
+    .output::-webkit-scrollbar-thumb {
+      background: var(--md-sys-color-outline);
+      border-radius: 4px;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 0.5rem;
+      }
+      .terminal {
+        width: 100%;
+        height: 100vh;
+        border-radius: 8px;
+      }
+      .output {
+        font-size: 0.85rem;
+        padding: 1rem;
+        max-height: calc(100vh - 120px);
+      }
+      .command {
+        padding: 0.75rem 1rem;
+      }
+      #prompt {
+        font-size: 0.85rem;
+      }
+      .input-field {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="terminal-header">
-            <div class="terminal-controls">
-                <div class="control-dot"></div>
-                <div class="control-dot"></div>
-                <div class="control-dot"></div>
-            </div>
-            <span class="terminal-title">OrbitOS Terminal</span>
-        </div>
-
-        <div class="output" id="output">
-            <p>Welcome to OrbitOS</p>
-            <p>Type 'help' for a list of commands</p>
-            <p class="highlight">Security patch: 1 January 2025</p>
-        </div>
-
-        <div class="command">
-            <span id="prompt" class="highlight"># root/orbit/home>> </span>
-            <input id="input" class="input-field" type="text" autofocus placeholder="Type a command...">
-        </div>
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <div class="control-dot"></div>
+        <div class="control-dot"></div>
+        <div class="control-dot"></div>
+      </div>
+      <span class="terminal-title">OrbitOS Terminal</span>
     </div>
-    <script src="script.js"></script>
+    <div class="output" id="output">
+      <p>Welcome to OrbitOS</p>
+      <p>Type 'help' for a list of commands</p>
+      <p class="highlight">Security patch: 1 may 2025</p>
+    </div>
+    <div class="command">
+      <span id="prompt" class="highlight"># root/orbit/home>> </span>
+      <input id="input" class="input-field" type="text" autofocus placeholder="Type a command..." />
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('Service Worker registered.'))
+        .catch(err => console.error('Service Worker registration failed:', err));
+    }
+  </script>
 </body>
 </html>
