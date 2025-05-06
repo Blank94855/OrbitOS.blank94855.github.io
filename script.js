@@ -47,7 +47,7 @@ function finalizeBootSequence() {
     output.innerHTML = `
         <p>Welcome to <span class="highlight">OrbitOS</span></p>
         <p>Type 'help' for a list of commands</p>
-        <p class="highlight">Security patch: 1 April 2025</p>
+        <p class="highlight">Security patch: 1 May 2025</p>
     `;
     inputField.disabled = false;
     prompt.style.display = 'inline';
@@ -301,6 +301,10 @@ const commands = {
         <p>stop [process] - Stop a process or component</p>
         <p>shutdown       - Shutsdown OrbitOS</p>
         <p>reboot         - Reboots OrbitOS</p>
+        <p>fortune        - Shows a random fortune</p>
+        <p>cowsay [text]  - Shows a cow with a message</p>
+        <p>flip           - Flip a coin</p>
+        <p>roll [num]     - Roll a dice (default: 6 sides)</p>
     `,
 
     clear: () => {
@@ -408,9 +412,12 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>Orbit OS 3.3.1 upgrade.</p>
+        <p>Orbit OS 3.3.2 upgrade.</p>
         
-        <p>✅ New 'stop' command to halt processes</p>
+        <p>-fortune: Displays a random fortune message from a collection of tech-related and humorous fortunes
+   - `cowsay`: Shows an ASCII art cow saying whatever message you provide
+   - `flip`: Flips a virtual coin (heads or tails)
+   - `roll`: Rolls a dice with a customizable number of sides (default is 6)</p>
         <p>⛔ System improvements.</p>
     `,
 
@@ -494,6 +501,64 @@ const commands = {
         } else {
             return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;
         }
+    },
+    
+    fortune: () => {
+        const fortunes = [
+            "You will find a hidden treasure where you least expect it.",
+            "A journey of a thousand miles begins with a single step.",
+            "Your code will compile on the first try today.",
+            "The bug you've been hunting is in a file you haven't checked.",
+            "Someone is googling how to do something you know by heart.",
+            "Error 404: Fortune not found. Just kidding!",
+            "Your backup strategy will be tested soon.",
+            "You will receive an unexpected email this week.",
+            "The password you wrote down isn't the right one.",
+            "You will solve a long-standing problem with an elegant solution.",
+            "Help! I'm trapped in a fortune-generating algorithm!",
+            "A clean desk is a sign of a sick mind.",
+            "Today is a good day to exit vim.",
+            "The source code is strong with this one.",
+            "You will soon have an opportunity to upgrade your hardware.",
+            "A suspicious popup is not your friend.",
+            "Your next cup of coffee will be exceptionally good.",
+            "Someone will ask you for tech support soon."
+        ];
+        const randomIndex = Math.floor(Math.random() * fortunes.length);
+        return `<p class="highlight">🔮 Fortune:</p><p>${fortunes[randomIndex]}</p>`;
+    },
+    
+    cowsay: (args) => {
+        const message = args.trim() || "Moo!";
+        return `
+        <pre>
+         ________
+        < ${message} >
+         --------
+                \\   ^__^
+                 \\  (oo)\\_______
+                    (__)\\       )\\/\\
+                        ||----w |
+                        ||     ||
+        </pre>
+        `;
+    },
+    
+    flip: () => {
+        const result = Math.random() > 0.5 ? "Heads" : "Tails";
+        return `<p>Flipping a coin...</p><p class="highlight">Result: ${result}</p>`;
+    },
+    
+    roll: (args) => {
+        let sides = 6;
+        if (args) {
+            const parsed = parseInt(args.trim(), 10);
+            if (!isNaN(parsed) && parsed > 0) {
+                sides = parsed;
+            }
+        }
+        const result = Math.floor(Math.random() * sides) + 1;
+        return `<p>Rolling a ${sides}-sided dice...</p><p class="highlight">Result: ${result}</p>`;
     },
 };
 
