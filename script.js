@@ -121,56 +121,6 @@ const config = {
     }    
 };    
     
-// Fortune quotes database
-const fortunes = [
-    "You will find a hidden treasure where you least expect it.",
-    "The early bird gets the worm, but the second mouse gets the cheese.",
-    "A journey of a thousand miles begins with a single step.",
-    "Do not fear what you don't know.",
-    "You will make many changes before settling down happily.",
-    "A dream you have will come true when you least expect it.",
-    "The greatest risk is not taking one.",
-    "The best way to predict the future is to create it.",
-    "You will live a long, happy life.",
-    "Your hard work is about to pay off. Remember, dreams are the seedlings of reality.",
-    "A lifetime of happiness awaits you.",
-    "Be careful who you trust. Salt and sugar look the same.",
-    "If you want the rainbow, you have to tolerate the rain.",
-    "Fortune favors the brave.",
-    "Your talents will be recognized and suitably rewarded.",
-    "Patience is a virtue, unless you're waiting for luck.",
-    "A smooth sea never made a skilled sailor.",
-    "The greatest danger could be your stupidity.",
-    "You don't need strength to let go of something. What you really need is understanding.",
-    "Don't worry about money. The best things in life are free."
-];
-
-// Cowsay function
-function generateCow(text) {
-    const textLines = text.split('\n');
-    const longestLine = Math.max(...textLines.map(line => line.length));
-    
-    let result = ' ' + '_'.repeat(longestLine + 2) + '\n';
-    
-    if (textLines.length === 1) {
-        result += `< ${textLines[0].padEnd(longestLine, ' ')} >\n`;
-    } else {
-        result += `/ ${textLines[0].padEnd(longestLine, ' ')} \\\n`;
-        for (let i = 1; i < textLines.length - 1; i++) {
-            result += `| ${textLines[i].padEnd(longestLine, ' ')} |\n`;
-        }
-        result += `\\ ${textLines[textLines.length - 1].padEnd(longestLine, ' ')} /\n`;
-    }
-    
-    result += ' ' + '-'.repeat(longestLine + 2) + '\n';
-    result += `        \\   ^__^\n`;
-    result += `         \\  (oo)\\_______\n`;
-    result += `            (__)\\       )\\/\\\n`;
-    result += `                ||----w |\n`;
-    result += `                ||     ||\n`;
-    
-    return result;
-}
     
 function generateBatteryTimeRemaining(percentage, isCharging) {    
     if (isCharging) {    
@@ -265,7 +215,7 @@ const terminalSites = {
         <p>-------------------</p>    
         <p>- OrbitOS version 3.2 is here.</p>    
         <p>- Battery & weather is now dynamic!.</p>    
-        <p>- New commands: cowsay and fortune added!</p>    
+            
         `,    
     'about.os': `    
         <p><span class="highlight">About OrbitOS</span></p>    
@@ -349,8 +299,6 @@ const commands = {
         <p>calc [expr]    - Calculate mathematical expression</p>    
         <p>browser [site] - Access predefined terminal websites</p>    
         <p>stop [process] - Stop a process or component</p>    
-        <p>cowsay [text]  - Display a cow saying your text</p>    
-        <p>fortune        - Display a random fortune</p>    
         <p>shutdown       - Shutsdown OrbitOS</p>    
         <p>reboot         - Reboots OrbitOS</p>    
     `,    
@@ -462,8 +410,7 @@ const commands = {
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>    
         <p>Orbit OS 3.3.1 upgrade.</p>    
             
-        <p>✅ New 'stop' command to halt processes</p>
-        <p>✅ Added 'cowsay' and 'fortune' commands</p>    
+        <p>✅ New 'stop' command to halt processes</p>    
         <p>⛔ System improvements.</p>    
     `,    
     
@@ -547,24 +494,7 @@ const commands = {
         } else {    
             return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;    
         }    
-    },
-    
-    // New cowsay command
-    cowsay: (args) => {
-        if (!args) {
-            return '<p>Usage: cowsay [text]</p>';
-        }
-        
-        const cowText = generateCow(args);
-        return `<pre>${cowText}</pre>`;
-    },
-    
-    // New fortune command
-    fortune: () => {
-        const randomIndex = Math.floor(Math.random() * fortunes.length);
-        const fortune = fortunes[randomIndex];
-        return `<p><span class="highlight">Fortune:</span> ${fortune}</p>`;
-    },
+    },    
 };    
     
 function getUptime() {    
@@ -719,4 +649,8 @@ inputField.addEventListener('keydown', function (event) {
     }    
 });    
     
-document.querySelector('.terminal').
+document.querySelector('.terminal').addEventListener('click', (e) => {    
+    if (!isSystemBricked && e.target !== inputField) {    
+      inputField.focus();    
+    }    
+})
