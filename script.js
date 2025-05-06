@@ -47,7 +47,7 @@ function finalizeBootSequence() {
     output.innerHTML = `    
         <p>Welcome to <span class="highlight">OrbitOS</span></p>    
         <p>Type 'help' for a list of commands</p>    
-        <p class="highlight">Security patch: 1 April 2025</p>    
+        <p class="highlight">Security patch: 1 May 2025</p>    
     `;    
     inputField.disabled = false;    
     prompt.style.display = 'inline';    
@@ -63,11 +63,11 @@ let historyIndex = -1;
 const config = {    
     username: 'root',    
     hostname: 'orbit',    
-    version: '3.3.1',    
+    version: '3.3.2',    
     lastBootTime: new Date().toLocaleString(),    
     systemInfo: {    
         os: 'OrbitOS',    
-        version: '3.3.1 - beta',    
+        version: '3.3.2 - beta',    
         kernel: '5.4.1-1059-gcp',    
         architecture: 'x86_64',    
         memory: '4.0GiB',    
@@ -213,8 +213,8 @@ const terminalSites = {
     'news.orb': `    
         <p><span class="highlight">OrbitOS News Feed</span></p>    
         <p>-------------------</p>    
-        <p>- OrbitOS version 3.2 is here.</p>    
-        <p>- Battery & weather is now dynamic!.</p>    
+        <p>- OrbitOS version 3.3.2 is here.</p>    
+        <p>- added fortune and cowsay!.</p>    
             
         `,    
     'about.os': `    
@@ -410,10 +410,10 @@ const commands = {
     
     software: () => `    
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>    
-        <p>Orbit OS 3.3.1 upgrade.</p>    
+        <p>Orbit OS 3.3.2 upgrade.</p>    
             
-        <p>✅ New 'stop' command to halt processes</p>    
-        <p>✅ Added 'fortune' and 'cowsay' commands</p>    
+       
+        <p>✅ Added 'fortune' and 'cowsay' commands along with may security</p>    
         <p>⛔ System improvements.</p>    
     `,    
     
