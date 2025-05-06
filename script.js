@@ -118,13 +118,47 @@ const config = {
             "Sleet",
             "Hail"
         ]
-    }
+    },
+    
+    fortuneCookies: [
+        "You will find happiness in unexpected places.",
+        "A journey of a thousand miles begins with a single step.",
+        "The greatest risk is not taking one.",
+        "Your code will compile on the first try... someday.",
+        "A bug in hand is worth two in production.",
+        "Fortune favors the bold. And the backups.",
+        "You will meet a tall, dark, and handsome... error message.",
+        "Have you tried turning it off and on again?",
+        "The best firewall is common sense.",
+        "A watched pot never boils, but an unwatched terminal crashes.",
+        "Two factor authentication is your friend.",
+        "Beware of malware disguised as kittens.",
+        "The cloud is just someone else's computer.",
+        "Your password is probably not as secure as you think.",
+        "Always read the documentation. Twice."
+    ],
+    
+    cowsayAnimals: [
+        "cow", "tux", "sheep", "dragon", "kitty"
+    ],
+    
+    jokes: [
+        "Why do programmers prefer dark mode? Because light attracts bugs!",
+        "How many programmers does it take to change a light bulb? None, that's a hardware problem.",
+        "There are 10 types of people in this world: those who understand binary, and those who don't.",
+        "Why was the JavaScript developer sad? Because he didn't know how to 'null' his feelings.",
+        "Why did the developer go broke? Because he used up all his cache.",
+        "!false, it's funny because it's true!",
+        "What do you call a computer that sings? A Dell.",
+        "Why don't programmers like nature? It has too many bugs and no debugging tool.",
+        "What is a programmer's favorite hangout place? Foo Bar.",
+        "Why was the function sad after a party? It didn't get called."
+    ]
 };
 
 
 function generateBatteryTimeRemaining(percentage, isCharging) {
     if (isCharging) {
-
         const remainingPercentage = 100 - percentage;
         const minutesPerPercent = Math.floor(Math.random() * 2) + 1; // 1-2 minutes per percent
         const totalMinutes = remainingPercentage * minutesPerPercent;
@@ -138,7 +172,6 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
             return `${hours}h ${minutes}m until full`;
         }
     } else {
-
         const minutesPerPercent = Math.floor(Math.random() * 10) + 5; // 5-15 minutes per percent
         const totalMinutes = percentage * minutesPerPercent;
 
@@ -158,35 +191,26 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
 let currentWeatherData = null;
 
 function generateRandomWeather() {
-    
     if (currentWeatherData) {
         return currentWeatherData;
     }
     
-    
     const locationIndex = Math.floor(Math.random() * config.weatherInfo.locations.length);
     const location = config.weatherInfo.locations[locationIndex];
     
-    
     const temperature = Math.floor(Math.random() * 51) - 10;
-    
     
     const conditionIndex = Math.floor(Math.random() * config.weatherInfo.conditions.length);
     const condition = config.weatherInfo.conditions[conditionIndex];
     
-    
     const humidity = Math.floor(Math.random() * 76) + 20;
     
-    
     const windSpeed = Math.floor(Math.random() * 51);
-    
     
     const precipIndex = Math.floor(Math.random() * config.weatherInfo.precipitationTypes.length);
     const precipitation = config.weatherInfo.precipitationTypes[precipIndex];
     
-    
     const precipChance = Math.floor(Math.random() * 101);
-    
     
     currentWeatherData = {
         location,
@@ -215,6 +239,7 @@ const terminalSites = {
         <p>-------------------</p>
         <p>- OrbitOS version 3.2 is here.</p>
         <p>- Battery & weather is now dynamic!.</p>
+        <p>- Fun commands added: fortune, joke, cowsay, and figlet!</p>
         
         `,
     'about.os': `
@@ -280,6 +305,355 @@ function systemHalt() {
     scrollToBottom();
 }
 
+function generateCowsay(text, animal) {
+    const animalArt = getCowsayAnimal(animal || 'cow');
+    const message = text || 'Moo!';
+    
+    // Create speech bubble
+    const lines = message.split('\n');
+    const maxLength = Math.max(...lines.map(line => line.length));
+    const border = '_' + '_'.repeat(maxLength + 2) + '_';
+    
+    let speech = border + '\n';
+    
+    if (lines.length === 1) {
+        speech += `< ${message} >\n`;
+    } else {
+        speech += `/ ${lines[0].padEnd(maxLength, ' ')} \\\n`;
+        for (let i = 1; i < lines.length - 1; i++) {
+            speech += `| ${lines[i].padEnd(maxLength, ' ')} |\n`;
+        }
+        speech += `\\ ${lines[lines.length - 1].padEnd(maxLength, ' ')} /\n`;
+    }
+    
+    speech += '-' + '-'.repeat(maxLength + 2) + '-\n';
+    speech += animalArt;
+    
+    return speech;
+}
+
+function getCowsayAnimal(animal) {
+    const animals = {
+        'cow': `        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||`,
+        'tux': `        \\
+         \\
+          \\
+           \\
+            \\ .--.
+             |o_o |
+             |:_/ |
+            //   \\ \\
+           (|     | )
+          /'\\_   _/\`\\
+          \\___)=(___/`,
+        'sheep': `        \\
+         \\
+          \\
+           \\
+              __     
+             /  \\    
+            ( oo )   
+            (____) 
+              ||   
+              ||   
+             ^^^^  `,
+        'dragon': `      \\                    / \\  //\\
+       \\    |\\___/|      /   \\//  \\\\
+            /0  0  \\__  /    //  | \\ \\    
+           /     /  \\/_/    //   |  \\  \\  
+           @_^_@'/   \\/_   //    |   \\   \\ 
+           //_^_/     \\/_ //     |    \\    \\
+        ( //) |        \\///      |     \\     \\
+      ( / /) _|_ /   )  //       |      \\     _\\
+    ( // /) '/,_ _ _/  ( ; -.    |    _ _\\.-~        .-~~~^-.
+  (( / / )) ,-{        _      \`-.|.-~-.           .~         \`.
+ (( // / ))  '/\\      /                 ~-. _ .-~      .-~^-.  \\
+ (( /// ))      \`.   {            }                   /      \\  \\
+  (( / ))     .----~-.\\        \\-'                 .~         \\  \`. \\^-.
+             ///.----..>        \\             _ -~             \`.  ^-\`  ^-_
+               ///-._ _ _ _ _ _ _}^ - - - - ~                     ~-- ,.-~
+                                                                  /.-~`,
+        'kitty': `     \\
+      \\
+       \\ /\\_/\\
+        (o.o)
+         >^<`
+    };
+    
+    return animals[animal.toLowerCase()] || animals['cow'];
+}
+
+function getFigletText(text) {
+    // Simple ASCII art generator for text
+    // This is a very basic implementation
+    const fontMap = {
+        'A': [
+            "  /\\  ",
+            " /  \\ ",
+            "/----\\",
+            "|    |"
+        ],
+        'B': [
+            "|--, ",
+            "|--< ",
+            "|--' ",
+            "    "
+        ],
+        'C': [
+            " --- ",
+            "|    ",
+            "|    ",
+            " --- "
+        ],
+        'D': [
+            "|--. ",
+            "|   |",
+            "|   |",
+            "|--' "
+        ],
+        'E': [
+            "|--- ",
+            "|--- ",
+            "|    ",
+            "|--- "
+        ],
+        'F': [
+            "|--- ",
+            "|--- ",
+            "|    ",
+            "|    "
+        ],
+        'G': [
+            " --- ",
+            "|    ",
+            "| -- ",
+            " --- "
+        ],
+        'H': [
+            "|   |",
+            "|---|",
+            "|   |",
+            "|   |"
+        ],
+        'I': [
+            "--- ",
+            " |  ",
+            " |  ",
+            "--- "
+        ],
+        'J': [
+            "    |",
+            "    |",
+            "|   |",
+            " --- "
+        ],
+        'K': [
+            "|  / ",
+            "|-/  ",
+            "| \\  ",
+            "|  \\ "
+        ],
+        'L': [
+            "|    ",
+            "|    ",
+            "|    ",
+            "|--- "
+        ],
+        'M': [
+            "|\\  /|",
+            "| \\/ |",
+            "|    |",
+            "|    |"
+        ],
+        'N': [
+            "|\\  |",
+            "| \\ |",
+            "|  \\|",
+            "|   |"
+        ],
+        'O': [
+            " --- ",
+            "|   |",
+            "|   |",
+            " --- "
+        ],
+        'P': [
+            "|--- ",
+            "|   |",
+            "|--- ",
+            "|    "
+        ],
+        'Q': [
+            " --- ",
+            "|   |",
+            "|  \\|",
+            " ---\\"
+        ],
+        'R': [
+            "|--  ",
+            "|  \\ ",
+            "| - \\",
+            "|   |"
+        ],
+        'S': [
+            " --- ",
+            "|    ",
+            "    |",
+            " --- "
+        ],
+        'T': [
+            "-----",
+            "  |  ",
+            "  |  ",
+            "  |  "
+        ],
+        'U': [
+            "|   |",
+            "|   |",
+            "|   |",
+            " --- "
+        ],
+        'V': [
+            "\\   /",
+            " \\ / ",
+            "  V  ",
+            "     "
+        ],
+        'W': [
+            "|   |",
+            "|   |",
+            "| / |",
+            " V V "
+        ],
+        'X': [
+            "\\ / ",
+            " X  ",
+            "/ \\ ",
+            "    "
+        ],
+        'Y': [
+            "\\   /",
+            " \\ / ",
+            "  |  ",
+            "  |  "
+        ],
+        'Z': [
+            "----",
+            "  / ",
+            " /  ",
+            "----"
+        ],
+        ' ': [
+            "    ",
+            "    ",
+            "    ",
+            "    "
+        ],
+        '!': [
+            " | ",
+            " | ",
+            " | ",
+            " o "
+        ],
+        '.': [
+            "   ",
+            "   ",
+            "   ",
+            " o "
+        ],
+        ',': [
+            "   ",
+            "   ",
+            "   ",
+            " / "
+        ],
+        '?': [
+            " -- ",
+            "   /",
+            "    ",
+            "  o "
+        ],
+        '0': [
+            " --- ",
+            "|   |",
+            "|   |",
+            " --- "
+        ],
+        '1': [
+            " /| ",
+            "/ | ",
+            "  | ",
+            "----"
+        ],
+        '2': [
+            " --- ",
+            "    |",
+            " /   ",
+            "/----"
+        ],
+        '3': [
+            " --- ",
+            "  __|",
+            "    |",
+            " --- "
+        ],
+        '4': [
+            "|  | ",
+            "|  | ",
+            "|---|",
+            "   | "
+        ],
+        '5': [
+            "|----",
+            "|--- ",
+            "    |",
+            "---- "
+        ],
+        '6': [
+            " --- ",
+            "|    ",
+            "|--- ",
+            " --- "
+        ],
+        '7': [
+            "-----",
+            "   / ",
+            "  /  ",
+            " /   "
+        ],
+        '8': [
+            " --- ",
+            "|---|",
+            "|   |",
+            " --- "
+        ],
+        '9': [
+            " --- ",
+            "|   |",
+            " ---|",
+            " --- "
+        ]
+    };
+    
+    const textUpper = text.toUpperCase();
+    let result = ['', '', '', ''];
+    
+    for (let i = 0; i < textUpper.length; i++) {
+        const char = textUpper[i];
+        const charLines = fontMap[char] || fontMap[' '];
+        
+        for (let line = 0; line < 4; line++) {
+            result[line] += charLines[line];
+        }
+    }
+    
+    return result.join('\n');
+}
+
 const commands = {
     help: () => `
         <p><span class="highlight">Available Commands:</span></p>
@@ -301,10 +675,11 @@ const commands = {
         <p>stop [process] - Stop a process or component</p>
         <p>shutdown       - Shutsdown OrbitOS</p>
         <p>reboot         - Reboots OrbitOS</p>
-        <p>fortune        - Shows a random fortune</p>
-        <p>cowsay [text]  - Shows a cow with a message</p>
-        <p>flip           - Flip a coin</p>
-        <p>roll [num]     - Roll a dice (default: 6 sides)</p>
+        <p class="highlight">Fun Commands:</p>
+        <p>fortune        - Displays a random fortune cookie message</p>
+        <p>cowsay [text]  - Makes an ASCII cow say something</p>
+        <p>joke           - Tells a programming joke</p>
+        <p>figlet [text]  - Creates ASCII art text</p>
     `,
 
     clear: () => {
@@ -412,13 +787,12 @@ const commands = {
 
     software: () => `
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>
-        <p>Orbit OS 3.3.2 upgrade.</p>
+        <p>Orbit OS 3.3.1 upgrade.</p>
         
-        <p>-fortune: Displays a random fortune message from a collection of tech-related and humorous fortunes
-   - `cowsay`: Shows an ASCII art cow saying whatever message you provide
-   - `flip`: Flips a virtual coin (heads or tails)
-   - `roll`: Rolls a dice with a customizable number of sides (default is 6)</p>
-        <p>⛔ System improvements.</p>
+        <p>✅ New 'stop' command to halt processes</p>
+        <p>✅ Added fun commands: fortune, cowsay, joke, figlet</p>
+        <p>⛔ May security updates applied</p>
+        <p>⛔ System improvements</p>
     `,
 
     weather: () => {
@@ -486,236 +860,3 @@ const commands = {
         }
         
         const siteName = args.trim();
-        if (!siteName) {
-             const availableSites = Object.keys(terminalSites).join(', ');
-            return `<p>Usage: browser [site_name]</p><p>Available sites: ${availableSites || 'None'}</p>`;
-        }
-
-        const siteContent = terminalSites[siteName];
-
-        if (siteContent) {
-            let browserOutput = `<p>Connecting to ${siteName}...</p>`;
-            browserOutput += `<p>Loading content...</p>`;
-            browserOutput += siteContent;
-            return browserOutput;
-        } else {
-            return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;
-        }
-    },
-    
-    fortune: () => {
-        const fortunes = [
-            "You will find a hidden treasure where you least expect it.",
-            "A journey of a thousand miles begins with a single step.",
-            "Your code will compile on the first try today.",
-            "The bug you've been hunting is in a file you haven't checked.",
-            "Someone is googling how to do something you know by heart.",
-            "Error 404: Fortune not found. Just kidding!",
-            "Your backup strategy will be tested soon.",
-            "You will receive an unexpected email this week.",
-            "The password you wrote down isn't the right one.",
-            "You will solve a long-standing problem with an elegant solution.",
-            "Help! I'm trapped in a fortune-generating algorithm!",
-            "A clean desk is a sign of a sick mind.",
-            "Today is a good day to exit vim.",
-            "The source code is strong with this one.",
-            "You will soon have an opportunity to upgrade your hardware.",
-            "A suspicious popup is not your friend.",
-            "Your next cup of coffee will be exceptionally good.",
-            "Someone will ask you for tech support soon."
-        ];
-        const randomIndex = Math.floor(Math.random() * fortunes.length);
-        return `<p class="highlight">🔮 Fortune:</p><p>${fortunes[randomIndex]}</p>`;
-    },
-    
-    cowsay: (args) => {
-        const message = args.trim() || "Moo!";
-        return `
-        <pre>
-         ________
-        < ${message} >
-         --------
-                \\   ^__^
-                 \\  (oo)\\_______
-                    (__)\\       )\\/\\
-                        ||----w |
-                        ||     ||
-        </pre>
-        `;
-    },
-    
-    flip: () => {
-        const result = Math.random() > 0.5 ? "Heads" : "Tails";
-        return `<p>Flipping a coin...</p><p class="highlight">Result: ${result}</p>`;
-    },
-    
-    roll: (args) => {
-        let sides = 6;
-        if (args) {
-            const parsed = parseInt(args.trim(), 10);
-            if (!isNaN(parsed) && parsed > 0) {
-                sides = parsed;
-            }
-        }
-        const result = Math.floor(Math.random() * sides) + 1;
-        return `<p>Rolling a ${sides}-sided dice...</p><p class="highlight">Result: ${result}</p>`;
-    },
-};
-
-function getUptime() {
-    const now = new Date();
-    const boot = new Date(config.lastBootTime);
-    const diff = now - boot;
-
-    if (isNaN(diff) || diff < 0) {
-        return 'Calculating...';
-    }
-
-    let seconds = Math.floor(diff / 1000);
-    let minutes = Math.floor(seconds / 60);
-    let hours = Math.floor(minutes / 60);
-    let days = Math.floor(hours / 24);
-
-    hours %= 24;
-    minutes %= 60;
-    seconds %= 60;
-
-    let uptimeString = '';
-    if (days > 0) uptimeString += `${days} day(s) `;
-    if (hours > 0) uptimeString += `${hours} hour(s) `;
-    if (minutes > 0) uptimeString += `${minutes} minute(s) `;
-
-    return uptimeString.trim() || 'Just booted';
-}
-
-
-function executeCommand(input) {
-     if (isSystemBricked) {
-        return '<p style="color: #ff6b6b;">System unresponsive.</p>';
-    }
-
-    const trimmedInput = input.trim();
-    if (!trimmedInput) {
-        return '';
-    }
-
-    const [command, ...args] = trimmedInput.split(' ');
-    const lowerCaseCommand = command.toLowerCase();
-    const commandFunction = commands[lowerCaseCommand];
-
-     let outputResult;
-    if (typeof commandFunction === 'function') {
-        outputResult = commandFunction(args.join(' '));
-    } else {
-         outputResult = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
-    }
-
-
-    if (trimmedInput) {
-       if (commandHistory[commandHistory.length - 1] !== trimmedInput) {
-           commandHistory.push(trimmedInput);
-       }
-       historyIndex = commandHistory.length;
-    }
-
-    return outputResult;
-}
-
-function displayResponse(input) {
-    const commandDiv = document.createElement('div');
-    const promptSpan = document.createElement('span');
-    promptSpan.className = 'highlight';
-    promptSpan.textContent = prompt.textContent;
-    const commandText = document.createTextNode(` ${input}`);
-
-    const commandPara = document.createElement('p');
-    commandPara.appendChild(promptSpan);
-    commandPara.appendChild(commandText);
-    commandDiv.appendChild(commandPara);
-
-    output.appendChild(commandDiv);
-
-    const response = executeCommand(input);
-
-    if (response) {
-        const responseDiv = document.createElement('div');
-        responseDiv.innerHTML = response;
-
-        if (response.includes('Error') || response.includes('not found') || response.includes('KERNEL PANIC') || response.includes('SYSTEM HALTED')) {
-           responseDiv.classList.add('error-message');
-        }
-        output.appendChild(responseDiv);
-    }
-
-
-    scrollToBottom();
-    inputField.value = '';
-}
-
-function scrollToBottom() {
-    setTimeout(() => {
-         output.scrollTop = output.scrollHeight;
-    }, 0);
-}
-
-
-window.addEventListener('DOMContentLoaded', async () => {
-    
-    config.batteryInfo.percentage = Math.floor(Math.random() * 100) + 1;
-    config.batteryInfo.charging = Math.random() > 0.5;
-    
-    
-    generateRandomWeather();
-
-    await simulateBootSequence();
-    finalizeBootSequence();
-});
-
-inputField.addEventListener('keydown', function (event) {
-    if (isSystemBricked) {
-        event.preventDefault();
-        return;
-    }
-
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const input = inputField.value.trim();
-        if (input) {
-            displayResponse(input);
-        } else {
-            const commandDiv = document.createElement('div');
-            commandDiv.innerHTML = `<p><span class="highlight">${prompt.textContent}</span> </p>`;
-            output.appendChild(commandDiv);
-            scrollToBottom();
-        }
-        inputField.value = '';
-        historyIndex = commandHistory.length;
-    } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        if (commandHistory.length > 0) {
-            if (historyIndex > 0) {
-                historyIndex--;
-            }
-            inputField.value = commandHistory[historyIndex];
-            inputField.setSelectionRange(inputField.value.length, inputField.value.length);
-        }
-    } else if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        if (commandHistory.length > 0) {
-            if (historyIndex < commandHistory.length - 1) {
-                historyIndex++;
-                inputField.value = commandHistory[historyIndex];
-                inputField.setSelectionRange(inputField.value.length, inputField.value.length);
-            } else {
-                historyIndex = commandHistory.length;
-                inputField.value = '';
-            }
-        }
-    }
-});
-
-document.querySelector('.terminal').addEventListener('click', (e) => {
-    if (!isSystemBricked && e.target !== inputField) {
-      inputField.focus();
-    }
-});
