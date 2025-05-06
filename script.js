@@ -299,6 +299,8 @@ const commands = {
         <p>calc [expr]    - Calculate mathematical expression</p>    
         <p>browser [site] - Access predefined terminal websites</p>    
         <p>stop [process] - Stop a process or component</p>    
+        <p>fortune        - Get a random fortune message</p>    
+        <p>cowsay [text]  - Display a cow saying your message</p>    
         <p>shutdown       - Shutsdown OrbitOS</p>    
         <p>reboot         - Reboots OrbitOS</p>    
     `,    
@@ -411,6 +413,7 @@ const commands = {
         <p>Orbit OS 3.3.1 upgrade.</p>    
             
         <p>✅ New 'stop' command to halt processes</p>    
+        <p>✅ Added 'fortune' and 'cowsay' commands</p>    
         <p>⛔ System improvements.</p>    
     `,    
     
@@ -494,67 +497,69 @@ const commands = {
         } else {    
             return `<p class="error">Error 404: Site '${siteName}' not found in terminal network.</p>`;    
         }    
-    },    
-};    
- fortune: () => {
-    const fortunes = [
-        "You will find a hidden treasure where you least expect it.",
-        "A beautiful, smart, and loving person will be coming into your life.",
-        "Your hard work is about to pay off. Remember, Rome wasn't built in a day.",
-        "A dubious friend may be an enemy in camouflage.",
-        "A faithful friend is a strong defense.",
-        "A fresh start will put you on your way.",
-        "A person of words and not deeds is like a garden full of weeds.",
-        "All the effort you are making will ultimately pay off.",
-        "An inch of time is an inch of gold.",
-        "Any day above ground is a good day.",
-        "Change is happening in your life, so go with the flow!",
-        "Competence like yours is underrated.",
-        "Curiosity kills boredom. Nothing kills curiosity.",
-        "Dedicate yourself with a calm mind to the task at hand.",
-        "Don't just spend time, invest it.",
-        "Every wise man started out by asking many questions.",
-        "Failure is the path of least persistence.",
-        "Fear and desire – two sides of the same coin.",
-        "Go take a rest; you deserve it.",
-        "He who expects no gratitude shall never be disappointed.",
-        "It is better to deal with problems before they arise.",
-        "It's amazing how much good you can do if you don't care who gets the credit.",
-        "Miles are covered one step at a time.",
-        "The greatest risk is not taking one.",
-        "The person who will not stand for something will fall for anything.",
-        "There is no greater pleasure than seeing your loved ones prosper.",
-        "You are far more influential than you think.",
-        "Your ability to juggle many tasks will take you far.",
-        "Your hard work will soon be rewarded."
-    ];
+    },
     
-    const randomIndex = Math.floor(Math.random() * fortunes.length);
-    return `<p class="highlight">Fortune says:</p><p>${fortunes[randomIndex]}</p>`;
-},
-
-cowsay: (args) => {
-    const message = args.trim() || "Moo!";
+    fortune: () => {
+        const fortunes = [
+            "You will find a hidden treasure where you least expect it.",
+            "A beautiful, smart, and loving person will be coming into your life.",
+            "Your hard work is about to pay off. Remember, Rome wasn't built in a day.",
+            "A dubious friend may be an enemy in camouflage.",
+            "A faithful friend is a strong defense.",
+            "A fresh start will put you on your way.",
+            "A person of words and not deeds is like a garden full of weeds.",
+            "All the effort you are making will ultimately pay off.",
+            "An inch of time is an inch of gold.",
+            "Any day above ground is a good day.",
+            "Change is happening in your life, so go with the flow!",
+            "Competence like yours is underrated.",
+            "Curiosity kills boredom. Nothing kills curiosity.",
+            "Dedicate yourself with a calm mind to the task at hand.",
+            "Don't just spend time, invest it.",
+            "Every wise man started out by asking many questions.",
+            "Failure is the path of least persistence.",
+            "Fear and desire – two sides of the same coin.",
+            "Go take a rest; you deserve it.",
+            "He who expects no gratitude shall never be disappointed.",
+            "It is better to deal with problems before they arise.",
+            "It's amazing how much good you can do if you don't care who gets the credit.",
+            "Miles are covered one step at a time.",
+            "The greatest risk is not taking one.",
+            "The person who will not stand for something will fall for anything.",
+            "There is no greater pleasure than seeing your loved ones prosper.",
+            "You are far more influential than you think.",
+            "Your ability to juggle many tasks will take you far.",
+            "Your hard work will soon be rewarded."
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * fortunes.length);
+        return `<p class="highlight">Fortune says:</p><p>${fortunes[randomIndex]}</p>`;
+    },
     
-    // Create the speech bubble
-    const bubbleWidth = message.length + 2;
-    const topLine = ` ${'_'.repeat(bubbleWidth)} `;
-    const bottomLine = ` ${'-'.repeat(bubbleWidth)} `;
-    const textLine = `< ${message} >`;
-    
-    // Create the cow ASCII art
-    const cow = `
+    cowsay: (args) => {
+        const message = args.trim() || "Moo!";
+        
+        // Create the speech bubble
+        const bubbleWidth = message.length + 2;
+        const topLine = ` ${'_'.repeat(bubbleWidth)} `;
+        const bottomLine = ` ${'-'.repeat(bubbleWidth)} `;
+        const textLine = `< ${message} >`;
+        
+        // Create the cow ASCII art
+        const cow = `
         \\   ^__^
          \\  (oo)\\_______
             (__)\\       )\\/\\
                 ||----w |
                 ||     ||
     `;
-    
-    return `<pre>${topLine}
+        
+        return `<pre>${topLine}
 ${textLine}
 ${bottomLine}${cow}</pre>`;
-}   
+    }    
+};    
+    
 function getUptime() {    
     const now = new Date();    
     const boot = new Date(config.lastBootTime);    
