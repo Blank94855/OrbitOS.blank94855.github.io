@@ -3,197 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OrbitOS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Bixby - alpha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
-
-        :root {
-            --md-sys-color-primary: #006399;
-            --md-sys-color-surface: #1a1c1e;
-            --md-sys-color-surface-container: #2e3133;
-            --md-sys-color-on-surface: #e2e2e5;
-            --md-sys-color-outline: #8b9198;
-            --terminal-accent: #00b4d8;
-            --terminal-error: #ff4444;
-            --terminal-success: #00c853;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(145deg, #141517, #1a1c1e);
-            color: var(--md-sys-color-on-surface);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Slightly off-white for a softer feel */
+            color: #212529;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
+            min-height: 100vh;
             padding: 1rem;
+            overflow-x: hidden;
         }
 
-        .terminal {
-            width: 95%;
-            max-width: 900px;
-            background-color: var(--md-sys-color-surface);
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
-                        0 2px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .terminal-header {
-            background-color: var(--md-sys-color-surface-container);
-            padding: 0.75rem 1rem;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #app-wrapper {
+            width: 100%;
+            max-width: 680px; /* Optimal width for readability */
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .bixby-title {
+            font-size: 4rem; /* Larger, more impactful title */
+            font-weight: 700;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 2.5rem; /* More space */
+            letter-spacing: -0.025em;
+        }
+
+        .search-container {
+            background-color: #ffffff;
+            border-radius: 30px; /* More rounded for a modern feel */
+            padding: 0.75rem; /* Generous padding */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 5px 10px rgba(0, 0, 0, 0.04);
             display: flex;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: box-shadow 0.3s ease;
+            margin-bottom: 2rem;
         }
 
-        .terminal-title {
-            color: var(--terminal-accent);
-            font-size: 0.9rem;
+        .search-container:focus-within {
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15), 0 5px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        #search-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem; /* Comfortable padding */
+            color: #495057;
+        }
+         #search-input::placeholder {
+            color: #adb5bd;
+        }
+
+        #search-button {
+            background-color: #007bff; /* Primary blue */
+            color: white;
+            border: none;
+            border-radius: 20px; /* Matching roundness */
+            padding: 0.75rem 1.75rem;
+            font-size: 1rem;
             font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
             margin-left: 0.5rem;
         }
 
-        .terminal-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-right: 1rem;
+        #search-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        #search-button:active {
+            transform: scale(0.98);
         }
 
-        .control-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
+        #output-area {
+            background-color: #ffffff;
+            border-radius: 16px; /* Softer radius */
+            padding: 1.5rem 2rem; /* More padding */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            margin-top: 1rem;
+            min-height: 150px;
+            animation: fadeInUp 0.7s ease-out 0.2s; /* Delayed animation */
+            animation-fill-mode: backwards; /* Ensures style is applied before animation starts */
+            display: none; /* Hidden initially */
+            line-height: 1.7;
+            color: #495057;
+        }
+        
+        .output-content {
+            animation: fadeInDown 0.5s ease-out;
         }
 
-        .output {
-            font-family: 'JetBrains Mono', monospace;
-            padding: 1.5rem;
-            min-height: 60vh;
-            max-height: 70vh;
-            overflow-y: auto;
-            line-height: 1.6;
-            font-size: 0.9rem;
+        .output-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 0.75rem;
         }
-
-        .output p {
+        .output-content h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-top: 1rem;
             margin-bottom: 0.5rem;
-            opacity: 0.9;
         }
-
-        .highlight {
-            color: var(--terminal-accent);
+        
+        .output-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .output-content li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .output-content li:last-child {
+            border-bottom: none;
+        }
+        .output-content strong {
+            color: #007bff;
+            font-weight: 600;
+        }
+        .output-content a {
+            color: #007bff;
+            text-decoration: none;
             font-weight: 500;
         }
-
-        .command {
-            display: flex;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background-color: var(--md-sys-color-surface-container);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        .output-content a:hover {
+            text-decoration: underline;
         }
 
-        #prompt {
-            color: var(--terminal-accent);
-            margin-right: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-        }
-
-        .input-field {
-            background-color: transparent;
-            border: none;
-            color: var(--md-sys-color-on-surface);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            width: 100%;
-            outline: none;
-        }
-
-        .input-field::placeholder {
-            color: var(--md-sys-color-outline);
-            opacity: 0.7;
-        }
-
-        /* Custom Scrollbar */
-        .output::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .output::-webkit-scrollbar-track {
-            background: var(--md-sys-color-surface);
-        }
-
-        .output::-webkit-scrollbar-thumb {
-            background: var(--md-sys-color-outline);
+        .wiki-summary {
+            max-height: 200px; /* Limit height */
+            overflow-y: auto;
+            padding-right: 10px; /* Space for scrollbar */
+            margin-top: 0.5rem;
+            border-left: 3px solid #007bff;
+            padding-left: 1rem;
+            background-color: #f8f9fa;
             border-radius: 4px;
         }
 
-        /* Mobile Optimization */
-        @media (max-width: 600px) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .terminal {
-                width: 100%;
-                height: 100vh;
-                border-radius: 8px;
-            }
-
-            .output {
-                font-size: 0.85rem;
-                padding: 1rem;
-                max-height: calc(100vh - 120px);
-            }
-
-            .command {
-                padding: 0.75rem 1rem;
-            }
-
-            #prompt {
-                font-size: 0.85rem;
-            }
-
-            .input-field {
-                font-size: 0.85rem;
-            }
+        
+        .wiki-summary::-webkit-scrollbar, .changelog-list::-webkit-scrollbar {
+            width: 6px;
         }
+        .wiki-summary::-webkit-scrollbar-track, .changelog-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .wiki-summary::-webkit-scrollbar-thumb, .changelog-list::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 10px;
+        }
+        .wiki-summary::-webkit-scrollbar-thumb:hover, .changelog-list::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
+        }
+        
+        .changelog-list {
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .changelog-list li {
+            font-size: 0.9rem;
+            padding: 0.3rem 0;
+        }
+        .changelog-list .version-tag {
+            background-color: #007bff;
+            color: white;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+
+
+        /* Loader animation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
-    <div class="terminal">
-        <div class="terminal-header">
-            <div class="terminal-controls">
-                <div class="control-dot"></div>
-                <div class="control-dot"></div>
-                <div class="control-dot"></div>
-            </div>
-            <span class="terminal-title">OrbitOS Terminal</span>
+
+    <div id="app-wrapper">
+        <h1 class="bixby-title">Bixby</h1>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Ask Bixby... (e.g., 'help')" autofocus>
+            <button id="search-button">Go</button>
         </div>
 
-        <div class="output" id="output">
-            <p>Welcome to OrbitOS</p>
-            <p>Type 'help' for a list of commands</p>
-            <p class="highlight">Security patch: 1 January 2025</p>
-        </div>
-
-        <div class="command">
-            <span id="prompt" class="highlight"># root/orbit/home>> </span>
-            <input id="input" class="input-field" type="text" autofocus placeholder="Type a command...">
+        <div id="output-area">
+            <p class="text-gray-400">Enter 'help' to see available commands.</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const outputArea = document.getElementById('output-area');
+
+        
+        const siteVersion = "1.0.0";
+        const changelog = [
+            
+            { version: "1.0.0", date: "2024-05-30", changes: ["Initial release with core commands (help, wiki, google, date, calc, clear)."] }
+        ];
+
+        const commands = {
+            "help": {
+                description: "Show this help message.",
+                action: showHelp
+            },
+            "about": {
+                description: "Show site version and changelog.",
+                action: showAboutInfo
+            },
+            "wiki": {
+                description: "Search Wikipedia and show a summary. Usage: wiki <search term>",
+                action: searchWikipedia
+            },
+            "google": {
+                description: "Search Google in a new tab. Usage: google <search term>",
+                action: searchGoogle
+            },
+            "date": {
+                description: "Display the current date and time.",
+                action: showDateTime
+            },
+            "calc": {
+                description: "Perform a calculation. Usage: calc <expression>",
+                action: calculateExpression
+            },
+            "clear": {
+                description: "Clear the output area.",
+                action: clearOutput
+            }
+        };
+
+        function displayOutput(htmlContent, isLoading = false) {
+            outputArea.style.display = 'block'; // Make sure it's visible
+            const contentWrapper = document.createElement('div');
+            contentWrapper.classList.add('output-content');
+            if (isLoading) {
+                contentWrapper.innerHTML = `<div class="loader"></div><p class="text-center text-gray-500">Fetching data...</p>`;
+            } else {
+                contentWrapper.innerHTML = htmlContent;
+            }
+            outputArea.innerHTML = ''; // Clear previous content
+            outputArea.appendChild(contentWrapper);
+        }
+
+        function showHelp() {
+            let helpText = '<h3>Available Commands:</h3><ul>';
+            for (const cmd in commands) {
+                helpText += `<li><strong>${cmd}</strong> &mdash; ${commands[cmd].description}</li>`;
+            }
+            helpText += '</ul>';
+            displayOutput(helpText);
+        }
+
+        function showAboutInfo() {
+            let aboutHtml = `<h3>About Bixby</h3>`;
+            aboutHtml += `<p><strong>Version:</strong> ${siteVersion}</p>`;
+            aboutHtml += `<h4>Changelog:</h4>`;
+            aboutHtml += '<ul class="changelog-list">';
+            changelog.forEach(entry => {
+                aboutHtml += `<li><span class="version-tag">${entry.version}</span> (${entry.date}): ${entry.changes.join(', ')}</li>`;
+            });
+            aboutHtml += '</ul>';
+            displayOutput(aboutHtml);
+        }
+
+        async function searchWikipedia(args) {
+            if (args.length === 0) {
+                displayOutput("<p>Please provide a search term for Wikipedia. Usage: wiki &lt;search term&gt;</p>");
+                return;
+            }
+            const searchTerm = args.join(' '); 
+            const queryTerm = args.join('_'); 
+            const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=true&explaintext=true&origin=*&titles=${encodeURIComponent(queryTerm)}`;
+            
+            displayOutput("", true); // Show loader
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const pageId = Object.keys(pages)[0];
+
+                if (pageId === "-1" || !pages[pageId].extract) {
+                    displayOutput(`<h3>Wikipedia Result</h3><p>Could not find a summary for "${searchTerm}". You can try searching directly:</p><p><a href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(searchTerm)}" target="_blank">Search Wikipedia for "${searchTerm}"</a></p>`);
+                } else {
+                    const page = pages[pageId];
+                    const summary = page.extract.length > 500 ? page.extract.substring(0, 500) + "..." : page.extract;
+                    const pageUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replace(/ /g, '_'))}`;
+                    const wikiHtml = `
+                        <h3>${page.title}</h3>
+                        <div class="wiki-summary">${summary}</div>
+                        <p style="margin-top:1rem;"><a href="${pageUrl}" target="_blank">Read more on Wikipedia</a></p>
+                    `;
+                    displayOutput(wikiHtml);
+                }
+            } catch (error) {
+                console.error("Wikipedia API Error:", error);
+                displayOutput("<p>Sorry, something went wrong while fetching from Wikipedia. Please try again later.</p>");
+            }
+        }
+
+        function searchGoogle(args) {
+            if (args.length === 0) {
+                displayOutput("<p>Please provide a search term for Google. Usage: google &lt;search term&gt;</p>");
+                return;
+            }
+            const searchTerm = args.join(' ');
+            const url = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+            displayOutput(`<p>Redirecting to Google for "<strong>${searchTerm}</strong>"...</p>`);
+            window.open(url, '_blank');
+        }
+
+        function showDateTime() {
+            const now = new Date();
+            displayOutput(`<p>Current date and time: <strong>${now.toLocaleString()}</strong></p>`);
+        }
+
+        function calculateExpression(args) {
+            if (!args || args.length === 0) {
+                displayOutput('<p>Please provide an expression to calculate. Usage: calc &lt;expression&gt;</p>');
+                return;
+            }
+            const expression = args.join('');
+            try {
+                if (/[^0-9\.\+\-\*\/ \(\)\%\^\e\pi]/.test(expression)) {
+                    throw new Error("Invalid characters in expression.");
+                }
+                let evalExpression = expression.replace(/\bpi\b/g, 'Math.PI').replace(/\be\b/g, 'Math.E');
+                evalExpression = evalExpression.replace(/\^/g, '**');
+
+                const result = new Function('return ' + evalExpression)();
+                if (isNaN(result) || !isFinite(result)) {
+                    throw new Error("Invalid calculation result.");
+                }
+                displayOutput(`<p>Result: ${expression} = <strong>${result}</strong></p>`);
+            } catch (error) {
+                displayOutput(`<p>Invalid calculation: "${expression}". ${error.message}</p>`);
+            }
+        }
+
+        function clearOutput() {
+            outputArea.innerHTML = '<p class="text-gray-400">Output cleared. Enter \'help\' for commands.</p>';
+        }
+
+        function processInput() {
+            const inputText = searchInput.value.trim();
+            if (inputText === "") {
+                if (outputArea.style.display !== 'none') {
+                    outputArea.innerHTML = '<p class="text-gray-400">Enter \'help\' to see available commands.</p>';
+                }
+                return;
+            }
+
+            const parts = inputText.toLowerCase().split(' ');
+            const commandName = parts[0];
+            const args = parts.slice(1);
+
+            if (commands[commandName]) {
+                commands[commandName].action(args);
+            } else {
+                displayOutput(`<p>Command "<strong>${commandName}</strong>" not found. Trying Google Search...</p>`);
+                setTimeout(() => {
+                     searchGoogle(inputText.split(' '));
+                }, 1000);
+            }
+        }
+
+        searchButton.addEventListener('click', processInput);
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                processInput();
+            }
+        });
+
+        if (outputArea.style.display === 'none' || outputArea.innerHTML.trim() === '') {
+             outputArea.innerHTML = '<p class="text-gray-400">Enter \'help\' to see available commands.</p>';
+        }
+        if (outputArea.style.display === 'none' && outputArea.innerHTML.includes("Enter 'help'")) {
+            outputArea.style.display = 'block';
+        }
+
+    </script>
+
 </body>
-    </html>
+</html>
