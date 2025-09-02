@@ -3,860 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bixby - Your AI Assistant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js" rel="stylesheet">
+    <title>OrbitOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --md-sys-color-primary: #006399;
+            --md-sys-color-surface: #1a1c1e;
+            --md-sys-color-surface-container: #2e3133;
+            --md-sys-color-on-surface: #e2e2e5;
+            --md-sys-color-outline: #8b9198;
+            --terminal-accent: #00b4d8;
+            --terminal-error: #ff4444;
+            --terminal-success: #00c853;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
-            --secondary: #f1f5f9;
-            --accent: #06b6d4;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --surface: #ffffff;
-            --surface-elevated: #f8fafc;
-            --border: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --gradient-surface: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Animated background elements */
-        .bg-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .bg-shape:nth-child(1) { width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s; }
-        .bg-shape:nth-child(2) { width: 120px; height: 120px; top: 20%; right: 15%; animation-delay: 1s; }
-        .bg-shape:nth-child(3) { width: 60px; height: 60px; bottom: 20%; left: 20%; animation-delay: 2s; }
-        .bg-shape:nth-child(4) { width: 100px; height: 100px; bottom: 15%; right: 10%; animation-delay: 3s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.7; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
-        }
-
-        /* Main container */
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #141517, #1a1c1e);
+            color: var(--md-sys-color-on-surface);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            gap: 2rem;
+            align-items: center;
+            padding: 1rem;
         }
 
-        /* Header section */
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-            animation: slideInFromTop 0.8s ease-out;
+        .terminal {
+            width: 95%;
+            max-width: 900px;
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+                        0 2px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .logo {
-            font-size: clamp(3rem, 8vw, 5rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .tagline {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 300;
-            margin-bottom: 0.5rem;
-        }
-
-        .version-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Search section */
-        .search-section {
-            animation: slideInFromBottom 0.8s ease-out 0.2s both;
-        }
-
-        .search-container {
-            background: var(--surface);
-            border-radius: 24px;
-            padding: 0.75rem;
-            box-shadow: var(--shadow-xl);
+        .terminal-header {
+            background-color: var(--md-sys-color-surface-container);
+            padding: 0.75rem 1rem;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .search-container:focus-within {
-            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.3), 0 8px 10px -6px rgba(99, 102, 241, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .search-icon {
-            color: var(--text-muted);
+        .terminal-title {
+            color: var(--terminal-accent);
+            font-size: 0.9rem;
+            font-weight: 500;
             margin-left: 0.5rem;
         }
 
-        .search-input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 1.125rem;
-            padding: 1rem 0.5rem;
-            color: var(--text-primary);
-            font-weight: 400;
-        }
-
-        .search-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-button {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .terminal-controls {
             display: flex;
-            align-items: center;
             gap: 0.5rem;
-            min-width: 100px;
-            justify-content: center;
+            margin-right: 1rem;
         }
 
-        .search-button:hover {
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-lg);
+        .control-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .search-button:active {
-            transform: translateY(0);
-        }
-
-        .search-button.loading {
-            pointer-events: none;
-        }
-
-        /* Quick commands */
-        .quick-commands {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            justify-content: center;
-            margin-top: 1rem;
-        }
-
-        .quick-command {
-            background: rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .quick-command:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-1px);
-        }
-
-        /* Output section */
-        .output-section {
-            animation: slideInFromBottom 0.8s ease-out 0.4s both;
-        }
-
-        .output-container {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: var(--shadow-xl);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            min-height: 200px;
-            display: none;
-        }
-
-        .output-container.visible {
-            display: block;
-            animation: fadeInScale 0.5s ease-out;
-        }
-
-        .output-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .output-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .close-button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .close-button:hover {
-            background: var(--secondary);
-            color: var(--text-primary);
-        }
-
-        .output-content {
-            color: var(--text-secondary);
-            line-height: 1.7;
-        }
-
-        .output-content h3 {
-            color: var(--text-primary);
-            font-size: 1.375rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .output-content h4 {
-            color: var(--text-primary);
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 1.5rem 0 0.75rem 0;
-        }
-
-        .output-content ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .output-content li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-            transition: all 0.2s ease;
-        }
-
-        .output-content li:last-child {
-            border-bottom: none;
-        }
-
-        .output-content li:hover {
-            background: var(--surface-elevated);
-            margin: 0 -1rem;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            border-radius: 8px;
-        }
-
-        .output-content strong {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .output-content a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .output-content a:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-
-        /* Wiki summary styling */
-        .wiki-summary {
-            background: var(--surface-elevated);
-            border-left: 4px solid var(--primary);
-            border-radius: 8px;
+        .output {
+            font-family: 'JetBrains Mono', monospace;
             padding: 1.5rem;
-            margin: 1rem 0;
-            max-height: 300px;
+            min-height: 60vh;
+            max-height: 70vh;
             overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--border);
+            line-height: 1.6;
+            font-size: 0.9rem;
         }
 
-        .wiki-summary::-webkit-scrollbar {
-            width: 6px;
+        .output p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
         }
 
-        .wiki-summary::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 3px;
+        .highlight {
+            color: var(--terminal-accent);
+            font-weight: 500;
         }
 
-        .wiki-summary::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        /* Changelog styling */
-        .changelog-list {
-            max-height: 250px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary) var(--border);
-        }
-
-        .changelog-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .changelog-list::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .changelog-list::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 3px;
-        }
-
-        .version-tag {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-right: 0.75rem;
-            display: inline-block;
-        }
-
-        /* Loading spinner */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Loading state */
-        .loading-content {
+        .command {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 1rem;
-            padding: 2rem;
-            color: var(--text-muted);
+            padding: 1rem 1.5rem;
+            background-color: var(--md-sys-color-surface-container);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        #prompt {
+            color: var(--terminal-accent);
+            margin-right: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
         }
 
-        /* Animations */
-        @keyframes slideInFromTop {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .input-field {
+            background-color: transparent;
+            border: none;
+            color: var(--md-sys-color-on-surface);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
         }
 
-        @keyframes slideInFromBottom {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .input-field::placeholder {
+            color: var(--md-sys-color-outline);
+            opacity: 0.7;
         }
 
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        
+        .output::-webkit-scrollbar {
+            width: 8px;
         }
 
-        /* Mobile responsiveness */
-        @media (max-width: 640px) {
-            .container {
-                padding: 1rem;
-                gap: 1.5rem;
+        .output::-webkit-scrollbar-track {
+            background: var(--md-sys-color-surface);
+        }
+
+        .output::-webkit-scrollbar-thumb {
+            background: var(--md-sys-color-outline);
+            border-radius: 4px;
+        }
+
+    
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
             }
 
-            .search-container {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .search-input {
-                text-align: center;
-                padding: 0.75rem;
-            }
-
-            .search-button {
+            .terminal {
                 width: 100%;
+                height: 100vh;
+                border-radius: 8px;
+            }
+
+            .output {
+                font-size: 0.85rem;
                 padding: 1rem;
+                max-height: calc(100vh - 120px);
             }
 
-            .quick-commands {
-                gap: 0.5rem;
+            .command {
+                padding: 0.75rem 1rem;
             }
 
-            .quick-command {
-                font-size: 0.8rem;
-                padding: 0.4rem 0.8rem;
+            #prompt {
+                font-size: 0.85rem;
             }
 
-            .output-container {
-                padding: 1.5rem;
+            .input-field {
+                font-size: 0.85rem;
             }
-
-            .output-header {
-                flex-direction: column;
-                gap: 0.5rem;
-                align-items: flex-start;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.75rem;
-            }
-
-            .logo {
-                font-size: 2.5rem;
-            }
-
-            .tagline {
-                font-size: 1rem;
-            }
-
-            .output-container {
-                padding: 1rem;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-primary: #f1f5f9;
-                --text-secondary: #cbd5e1;
-                --text-muted: #94a3b8;
-                --surface: rgba(30, 41, 59, 0.8);
-                --surface-elevated: rgba(51, 65, 85, 0.8);
-                --border: #374151;
-                --secondary: #1e293b;
-            }
-        }
-
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Focus states for accessibility */
-        .search-input:focus,
-        .search-button:focus,
-        .quick-command:focus,
-        .close-button:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="bg-shapes">
-        <div class="bg-shape"></div>
-        <div class="bg-shape"></div>
-        <div class="bg-shape"></div>
-        <div class="bg-shape"></div>
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-controls">
+                <div class="control-dot"></div>
+                <div class="control-dot"></div>
+                <div class="control-dot"></div>
+            </div>
+            <span class="terminal-title">OrbitOS Terminal</span>
+        </div>
+
+        <div class="output" id="output">
+            <p>Welcome to OrbitOS</p>
+            <p>Type 'help' for a list of commands</p>
+            <p class="highlight">Security patch: 1 September 2025</p>
+        </div>
+
+        <div class="command">
+            <span id="prompt" class="highlight"># root/orbit/home>> </span>
+            <input id="input" class="input-field" type="text" autofocus placeholder="Type a command...">
+        </div>
     </div>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="logo">Bixby</h1>
-            <p class="tagline">Your intelligent AI assistant</p>
-            <span class="version-badge">v1.2.0</span>
-        </header>
-
-        <section class="search-section">
-            <div class="search-container">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input type="text" class="search-input" placeholder="Ask me anything... (try 'help')" autofocus>
-                <button class="search-button" id="search-button">
-                    <span class="button-text">Search</span>
-                    <div class="spinner" style="display: none;"></div>
-                </button>
-            </div>
-
-            <div class="quick-commands">
-                <button class="quick-command" data-command="help">Help</button>
-                <button class="quick-command" data-command="about">About</button>
-                <button class="quick-command" data-command="date">Date & Time</button>
-                <button class="quick-command" data-command="calc 2+2">Calculator</button>
-            </div>
-        </section>
-
-        <section class="output-section">
-            <div class="output-container" id="output-container">
-                <div class="output-header">
-                    <div class="output-title">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
-                            <polyline points="9,11 9,8 15,2 21,8 15,14 9,11"></polyline>
-                        </svg>
-                        <span id="output-title-text">Results</span>
-                    </div>
-                    <button class="close-button" id="close-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-                <div class="output-content" id="output-content">
-                    <p>Enter a command or question to get started. Type 'help' to see available commands.</p>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <script>
-        // Site configuration
-        const siteVersion = "1.2.0";
-        const changelog = [
-            { 
-                version: "1.2.0", 
-                date: "2024-05-30", 
-                changes: [
-                    "Complete UI redesign with modern gradient background",
-                    "Enhanced mobile responsiveness and touch interactions",
-                    "Added quick command buttons for faster access",
-                    "Improved accessibility with better focus states",
-                    "Added loading animations and micro-interactions"
-                ]
-            },
-            { 
-                version: "1.1.0", 
-                date: "2024-05-30", 
-                changes: [
-                    "Added 'about' command for version & changelog",
-                    "Minor UI tweaks for output area"
-                ]
-            },
-            { 
-                version: "1.0.0", 
-                date: "2024-05-29", 
-                changes: [
-                    "Initial release with core commands (help, wiki, google, date, calc, clear)",
-                    "High-quality centered search interface",
-                    "Inline Wikipedia summary display"
-                ]
-            }
-        ];
-
-        // DOM elements
-        const searchInput = document.querySelector('.search-input');
-        const searchButton = document.getElementById('search-button');
-        const outputContainer = document.getElementById('output-container');
-        const outputContent = document.getElementById('output-content');
-        const outputTitleText = document.getElementById('output-title-text');
-        const closeButton = document.getElementById('close-button');
-        const quickCommandButtons = document.querySelectorAll('.quick-command');
-
-        // Command definitions
-        const commands = {
-            "help": {
-                description: "Show available commands and their usage",
-                action: showHelp
-            },
-            "about": {
-                description: "Display version information and changelog",
-                action: showAbout
-            },
-            "wiki": {
-                description: "Search Wikipedia for information. Usage: wiki <search term>",
-                action: searchWikipedia
-            },
-            "google": {
-                description: "Search Google in a new tab. Usage: google <search term>",
-                action: searchGoogle
-            },
-            "date": {
-                description: "Show current date and time",
-                action: showDateTime
-            },
-            "calc": {
-                description: "Perform calculations. Usage: calc <expression>",
-                action: calculateExpression
-            },
-            "clear": {
-                description: "Clear the output area",
-                action: clearOutput
-            }
-        };
-
-        // Utility functions
-        function showOutput(title, content, isLoading = false) {
-            outputTitleText.textContent = title;
-            
-            if (isLoading) {
-                outputContent.innerHTML = `
-                    <div class="loading-content">
-                        <div class="loading-spinner"></div>
-                        <p>Fetching information...</p>
-                    </div>
-                `;
-            } else {
-                outputContent.innerHTML = content;
-            }
-            
-            outputContainer.classList.add('visible');
-        }
-
-        function hideOutput() {
-            outputContainer.classList.remove('visible');
-        }
-
-        function setButtonLoading(isLoading) {
-            const buttonText = searchButton.querySelector('.button-text');
-            const spinner = searchButton.querySelector('.spinner');
-            
-            if (isLoading) {
-                buttonText.style.display = 'none';
-                spinner.style.display = 'block';
-                searchButton.classList.add('loading');
-            } else {
-                buttonText.style.display = 'block';
-                spinner.style.display = 'none';
-                searchButton.classList.remove('loading');
-            }
-        }
-
-        // Command implementations
-        function showHelp() {
-            let helpContent = '<h3>Available Commands</h3>';
-            helpContent += '<p>Here are all the commands you can use with Bixby:</p>';
-            helpContent += '<ul>';
-            
-            for (const [cmd, info] of Object.entries(commands)) {
-                helpContent += `
-                    <li>
-                        <strong>${cmd}</strong> — ${info.description}
-                    </li>
-                `;
-            }
-            
-            helpContent += '</ul>';
-            helpContent += '<p><strong>Tip:</strong> You can also just type any question and I\'ll try to help or search Google for you!</p>';
-            
-            showOutput('Help & Commands', helpContent);
-        }
-
-        function showAbout() {
-            let aboutContent = `
-                <h3>About Bixby</h3>
-                <p>Bixby is your intelligent AI assistant, designed to help you with various tasks including web searches, calculations, and information retrieval.</p>
-                <p><strong>Current Version:</strong> ${siteVersion}</p>
-                
-                <h4>Recent Updates</h4>
-                <div class="changelog-list">
-                    <ul>
-            `;
-            
-            changelog.forEach(entry => {
-                aboutContent += `
-                    <li>
-                        <span class="version-tag">${entry.version}</span>
-                        <strong>${entry.date}</strong>
-                        <ul style="margin-top: 0.5rem; padding-left: 1rem;">
-                `;
-                entry.changes.forEach(change => {
-                    aboutContent += `<li style="font-size: 0.9rem; border: none; padding: 0.25rem 0;">${change}</li>`;
-                });
-                aboutContent += '</ul></li>';
-            });
-            
-            aboutContent += '</ul></div>';
-            showOutput('About Bixby', aboutContent);
-        }
-
-        async function searchWikipedia(args) {
-            if (args.length === 0) {
-                showOutput('Wikipedia Search', '<p>Please provide a search term. <strong>Usage:</strong> wiki &lt;search term&gt;</p>');
-                return;
-            }
-
-            const searchTerm = args.join(' ');
-            const queryTerm = args.join('_');
-            
-            showOutput('Wikipedia Search', '', true);
-            setButtonLoading(true);
-
-            try {
-                const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro=true&explaintext=true&origin=*&titles=${encodeURIComponent(queryTerm)}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                const pages = data.query.pages;
-                const pageId = Object.keys(pages)[0];
-
-                if (pageId === "-1" || !pages[pageId].extract) {
-                    const content = `
-                        <h3>No Results Found</h3>
-                        <p>Sorry, I couldn't find a Wikipedia article for "<strong>${searchTerm}</strong>".</p>
-                        <p><a href="https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(searchTerm)}" target="_blank">Try searching Wikipedia directly</a></p>
-                    `;
-                    showOutput('Wikipedia Search', content);
-                } else {
-                    const page = pages[pageId];
-                    const summary = page.extract.length > 600 ? page.extract.substring(0, 600) + "..." : page.extract;
-                    const pageUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(page.title.replace(/ /g, '_'))}`;
-                    
-                    const content = `
-                        <h3>${page.title}</h3>
-                        <div class="wiki-summary">
-                            ${summary}
-                        </div>
-                        <p><a href="${pageUrl}" target="_blank">Read the full article on Wikipedia →</a></p>
-                    `;
-                    showOutput('Wikipedia Search', content);
-                }
-            } catch (error) {
-                console.error("Wikipedia API Error:", error);
-                showOutput('Wikipedia Search', '<p>Sorry, there was an error fetching data from Wikipedia. Please try again later.</p>');
-            } finally {
-                setButtonLoading(false);
-            }
-        }
-
-        function searchGoogle(args) {
-            if (args.length === 0) {
-                showOutput('Google Search', '<p>Please provide a search term. <strong>Usage:</strong> google &lt;search term&gt;</p>');
-                return;
-            }
-
-            const searchTerm = args.join(' ');
-            const url = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
-            
-            showOutput('Google Search', `<p>Opening Google search for "<strong>${searchTerm}</strong>" in a new tab...</p>`);
-            window.open(url, '_blank');
-        }
-
-        function showDateTime() {
-            const now = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                timeZoneName: 'short'
-            };
-            
-            const content = `
-                <h3>Current Date & Time</h3>
-                <p><strong>${now.toLocaleDateString('en-US', options)}</strong></p>
-                <p>Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
-            `;
-            
-            showOutput('Date & Time', content);
-        }
-
-        function calculateExpression(args) {
-            if (args.
+    <script src="script.js"></script>
+</body>
+</html>
