@@ -9,7 +9,7 @@ let stoppedProcesses = [];
 const bootSequence = [    
     "Initializing OS...",    
     "Checking hardware compatibility...",    
-    "Loading kernel 5.4.1-1059-gcp...",    
+    "Loading kernel 5.4.2-1070-gki...",    
     "Mounting root filesystem...",    
     "Setting up system directories...",    
     "Configuring network interfaces...",    
@@ -47,7 +47,7 @@ function finalizeBootSequence() {
     output.innerHTML = `    
         <p>Welcome to <span class="highlight">OrbitOS</span></p>    
         <p>Type 'help' for a list of commands</p>    
-        <p class="highlight">Security patch: 1 May 2025</p>    
+        <p class="highlight">Security patch: 1 September 2025</p>    
     `;    
     inputField.disabled = false;    
     prompt.style.display = 'inline';    
@@ -63,12 +63,12 @@ let historyIndex = -1;
 const config = {    
     username: 'root',    
     hostname: 'orbit',    
-    version: '3.3.2',    
+    version: '3.4',    
     lastBootTime: new Date().toLocaleString(),    
     systemInfo: {    
         os: 'OrbitOS',    
-        version: '3.3.2 - beta',    
-        kernel: '5.4.1-1059-gcp',    
+        version: '3.4 - beta',    
+        kernel: '5.4.2-1070-gki',    
         architecture: 'x86_64',    
         memory: '4.0GiB',    
         disk: '1.0GiB',    
@@ -213,8 +213,8 @@ const terminalSites = {
     'news.orb': `    
         <p><span class="highlight">OrbitOS News Feed</span></p>    
         <p>-------------------</p>    
-        <p>- OrbitOS version 3.3.2 is here.</p>    
-        <p>- added fortune and cowsay!.</p>    
+        <p>- OrbitOS version 3.4 is here.</p>    
+        <p>- OrbitOS 3.4 brings custom os!!!!!.</p>    
             
         `,    
     'about.os': `    
@@ -303,6 +303,7 @@ const commands = {
         <p>cowsay [text]  - Display a cow saying your message</p>    
         <p>shutdown       - Shutsdown OrbitOS</p>    
         <p>reboot         - Reboots OrbitOS</p>    
+        <p>dev            - access dev menu (custom os and etc)
     `,    
     
     clear: () => {    
@@ -410,11 +411,10 @@ const commands = {
     
     software: () => `    
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>    
-        <p>Orbit OS 3.3.2 upgrade.</p>    
+        <p>Orbit OS 3.4 upgrade.</p>    
             
        
-        <p>✅ Added 'fortune' and 'cowsay' commands along with may security</p>    
-        <p>⛔ System improvements.</p>    
+        <p>✅ Major update released: The system now supports <span class="highlight">Custom OS Installation</span>. This feature allows you to load and run an entirely different interface directly inside the terminal, simulating the experience of switching to a brand-new operating system. Once activated, the console will fetch the specified source and display it as if the device had been rebooted into a different environment, giving you the freedom to explore alternate systems without leaving the shell.</p>  
     `,    
     
     weather: () => {    
@@ -539,13 +539,13 @@ const commands = {
     cowsay: (args) => {
         const message = args.trim() || "Moo!";
         
-        // Create the speech bubble
+        
         const bubbleWidth = message.length + 2;
         const topLine = ` ${'_'.repeat(bubbleWidth)} `;
         const bottomLine = ` ${'-'.repeat(bubbleWidth)} `;
         const textLine = `< ${message} >`;
         
-        // Create the cow ASCII art
+        
         const cow = `
         \\   ^__^
          \\  (oo)\\_______
@@ -717,3 +717,196 @@ document.querySelector('.terminal').addEventListener('click', (e) => {
       inputField.focus();    
     }    
 })
+let devToolsOpen = false;
+let customOsInstallationActive = false;
+let awaitingConfirmation = false;
+let awaitingUrl = false;
+
+const devCommands = {
+'custom os': () => {
+if (!devToolsOpen) {
+return '<p class="error">Command not recognized. Type "help" for available commands.</p>';
+}
+
+customOsInstallationActive = true;    
+    awaitingConfirmation = true;    
+        
+    return `    
+        <p class="error">⚠️ Warning: Installing a custom ROM can cause severe and irreversible damage to your device. It may corrupt critical system files, prevent the device from booting, disable core functions, or permanently harm hardware components. Only proceed if you fully understand the risks, as improper installation can render your device completely unusable.</p>    
+        <p>Type YES to continue and install a custom os</p>    
+        <p>Type NO to cancel the installation.</p>    
+    `;    
+}
+
+};
+
+commands.dev = () => {
+devToolsOpen = true;
+return `<p class="highlight">Developer Tools Activated</p><p>Additional commands unlocked: "custom os".</p><p>Use with caution.</p>`;
+};
+
+function handleCustomOsInstallation(input) {
+const lowerInput = input.toLowerCase().trim();
+
+if (awaitingConfirmation) {    
+    if (lowerInput === 'yes') {    
+        awaitingConfirmation = false;    
+        awaitingUrl = true;    
+        return `    
+            <p>Please enter the URL of the custom ROM you wish to install. Ensure the link is correct and points to a compatible ROM for this device. Any mistakes during installation can cause system instability, prevent the device from booting, or even permanently damage hardware. Double-check the source before proceeding.</p>    
+        `;    
+    } else if (lowerInput === 'no') {    
+        customOsInstallationActive = false;    
+        awaitingConfirmation = false;    
+        return '<p>Custom OS installation cancelled.</p>';    
+    } else {    
+        return '<p>Please type YES to continue or NO to cancel.</p>';    
+    }    
+}    
+    
+if (awaitingUrl) {    
+    if (input.startsWith('http://') || input.startsWith('https://')) {    
+        awaitingUrl = false;    
+        customOsInstallationActive = false;    
+            
+        inputField.disabled = true;    
+        prompt.style.display = 'none';    
+            
+        setTimeout(() => {    
+            const installationSteps = [    
+                '[INFO] Initializing installation...',    
+                '[INFO] Verifying custom ROM integrity...',    
+                '[OK] ROM verified.',    
+                '[INFO] Backing up temporary system state...',    
+                '[INFO] Writing system files...',    
+                '[PROGRESS] ██████████ 45%',    
+                '[PROGRESS] ███████████████ 72%',    
+                '[INFO] Applying configuration settings...',    
+                '[WARNING] Certain features may be unstable.',    
+                '[OK] Installation complete.',    
+                '[INFO] Rebooting system...'    
+            ];    
+                
+            let stepIndex = 0;    
+            const displayStep = () => {    
+                if (stepIndex < installationSteps.length) {    
+                    const stepDiv = document.createElement('p');    
+                    stepDiv.innerHTML = installationSteps[stepIndex];    
+                    if (installationSteps[stepIndex].includes('[WARNING]')) {    
+                        stepDiv.style.color = '#ffa500';    
+                    } else if (installationSteps[stepIndex].includes('[OK]')) {    
+                        stepDiv.style.color = '#4ade80';    
+                    }    
+                    output.appendChild(stepDiv);    
+                    scrollToBottom();    
+                    stepIndex++;    
+                    setTimeout(displayStep, 800);    
+                } else {    
+                    const iframeContainer = document.createElement('div');    
+                    const iframe = document.createElement('iframe');    
+                    iframe.src = input;    
+                    iframe.style.cssText = 'width: 100%; height: 100%; border: none;';    
+                    iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';    
+                        
+                    const iframeDiv = document.createElement('div');    
+                    iframeDiv.style.cssText = 'width: 100%; height: 600px; border: 2px solid #4ade80; margin: 10px 0;';    
+                    iframeDiv.appendChild(iframe);    
+                        
+                    iframeContainer.innerHTML = '<p class="highlight">Custom OS Installation Complete - Loading new system...</p>';    
+                    iframeContainer.appendChild(iframeDiv);    
+                        
+                    iframe.onerror = () => {    
+                        const panicMessage = document.createElement('p');
+                        panicMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold;">[!!! KERNEL PANIC!!!]</span><br><span style="color: #ff0000;">System integrity compromised.<br>Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted.</span>`;
+                        iframeContainer.appendChild(panicMessage);
+                        inputField.disabled = true;
+                        prompt.style.display = 'none';
+                    };    
+                        
+                    iframe.onload = () => {    
+                        try {    
+                            if (iframe.contentDocument || iframe.contentWindow) {    
+                                const successMsg = document.createElement('p');    
+                                successMsg.textContent = `System successfully loaded from: ${input}`;    
+                                iframeContainer.appendChild(successMsg);    
+                            }    
+                        } catch (e) {    
+                            const successMsg = document.createElement('p');    
+                            successMsg.textContent = `System successfully loaded from: ${input}`;    
+                            iframeContainer.appendChild(successMsg);    
+                        }    
+                    };    
+                        
+                    setTimeout(() => {    
+                        try {    
+                            if (!iframe.contentWindow) {    
+                                const panicMessage = document.createElement('p');
+                                panicMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold;">[!!! KERNEL PANIC!!!]</span><br><span style="color: #ff0000;">System integrity compromised.<br>Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted.</span>`;
+                                iframeContainer.appendChild(panicMessage);
+                                inputField.disabled = true;
+                                prompt.style.display = 'none';
+                            }    
+                        } catch (e) {    
+                        }    
+                    }, 10000);    
+                        
+                    output.appendChild(iframeContainer);    
+                    scrollToBottom();    
+                }    
+            };    
+            displayStep();    
+        }, 500);    
+            
+        return `<p>Starting installation from: ${input}</p>`;    
+    } else {    
+        return '<p class="error">Invalid URL format. Please enter a valid URL starting with http:// or https://</p>';    
+    }    
+}    
+    
+return null;
+
+}
+
+function executeCommand(input) {
+if (isSystemBricked) {
+return '<p style="color: #ff6b6b;">System unresponsive.</p>';
+}
+
+const trimmedInput = input.trim();    
+if (!trimmedInput) {    
+    return '';    
+}    
+    
+if (customOsInstallationActive) {    
+    const customOsResult = handleCustomOsInstallation(trimmedInput);    
+    if (customOsResult !== null) {    
+        return customOsResult;    
+    }    
+}    
+    
+const [command, ...args] = trimmedInput.split(' ');    
+const lowerCaseCommand = command.toLowerCase();    
+    
+if (devCommands[trimmedInput.toLowerCase()]) {    
+    return devCommands[trimmedInput.toLowerCase()]();    
+}    
+    
+const commandFunction = commands[lowerCaseCommand];    
+    
+let outputResult;    
+if (typeof commandFunction === 'function') {    
+    outputResult = commandFunction(args.join(' '));    
+} else {    
+    outputResult = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;    
+}    
+    
+if (trimmedInput) {    
+    if (commandHistory[commandHistory.length - 1] !== trimmedInput) {    
+        commandHistory.push(trimmedInput);    
+    }    
+    historyIndex = commandHistory.length;    
+}    
+    
+return outputResult;
+
+                                    }
