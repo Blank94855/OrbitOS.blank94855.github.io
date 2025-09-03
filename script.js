@@ -63,11 +63,11 @@ let historyIndex = -1;
 const config = {    
     username: 'root',    
     hostname: 'orbit',    
-    version: '3.4',    
+    version: '3.4.1',    
     lastBootTime: new Date().toLocaleString(),    
     systemInfo: {    
         os: 'OrbitOS',    
-        version: '3.4 - beta',    
+        version: '3.4.1 - beta',    
         kernel: '5.4.2-1070-gki',    
         architecture: 'x86_64',    
         memory: '4.0GiB',    
@@ -76,7 +76,7 @@ const config = {
     },    
     
     batteryInfo: {    
-        percentage: Math.floor(Math.random() * 100) + 1, // 1-100%    
+        percentage: Math.floor(Math.random() * 100) + 1, 
         charging: Math.random() > 0.5     
     },    
         
@@ -126,7 +126,7 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
     if (isCharging) {    
     
         const remainingPercentage = 100 - percentage;    
-        const minutesPerPercent = Math.floor(Math.random() * 2) + 1; // 1-2 minutes per percent    
+        const minutesPerPercent = Math.floor(Math.random() * 2) + 1; 
         const totalMinutes = remainingPercentage * minutesPerPercent;    
     
         const hours = Math.floor(totalMinutes / 60);    
@@ -139,7 +139,7 @@ function generateBatteryTimeRemaining(percentage, isCharging) {
         }    
     } else {    
     
-        const minutesPerPercent = Math.floor(Math.random() * 10) + 5; // 5-15 minutes per percent    
+        const minutesPerPercent = Math.floor(Math.random() * 10) + 5;  
         const totalMinutes = percentage * minutesPerPercent;    
     
         const days = Math.floor(totalMinutes / (60 * 24));    
@@ -246,7 +246,7 @@ function triggerSystemBrick() {
     prompt.style.display = 'none';    
     
     const brickMessage = document.createElement('p');    
-    brickMessage.innerHTML = `<span class="highlight error">[!!! KERNEL PANIC !!!]</span><br>System integrity compromised. Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted. Please reboot the system.`;    
+    brickMessage.innerHTML = `<span class="highlight error">[!!! KERNEL PANIC !!!]</span><br>E: Unable to mount /system (Invalid argument). E: failed to mount /data (No such file or directory).<br>E: unable to mount /cache (I/O error)<br>E: failed to mount /vendor (Invalid argument)<br>E: init: terminating service. Please reboot the system.`;    
     brickMessage.style.color = '#ff6b6b';    
     brickMessage.style.fontWeight = 'bold';    
     output.appendChild(brickMessage);    
@@ -583,13 +583,13 @@ function getUptime() {
     if (hours > 0) uptimeString += `${hours} hour(s) `;    
     if (minutes > 0) uptimeString += `${minutes} minute(s) `;    
     
-    return uptimeString.trim() || 'Just booted';    
+    return uptimeString.trim() || 'null';    
 }    
     
     
 function executeCommand(input) {    
      if (isSystemBricked) {    
-        return '<p style="color: #ff6b6b;">System unresponsive.</p>';    
+        return '<p style="color: #ff6b6b;">E: Operation timed out</p>';    
     }    
     
     const trimmedInput = input.trim();    
@@ -639,7 +639,7 @@ function displayResponse(input) {
         const responseDiv = document.createElement('div');    
         responseDiv.innerHTML = response;    
     
-        if (response.includes('Error') || response.includes('not found') || response.includes('KERNEL PANIC') || response.includes('SYSTEM HALTED')) {    
+        if (response.includes('Error') || response.includes('not found') || response.includes('Kernel panic - not syncing') || response.includes('Corrupted block found on /data')) {    
            responseDiv.classList.add('error-message');    
         }    
         output.appendChild(responseDiv);    
@@ -723,20 +723,40 @@ let customOsInstallationActive = false;
 let awaitingConfirmation = false;
 let awaitingUrl = false;
 
+function clearTerminalKeepIframe() {
+    const iframes = output.querySelectorAll('iframe');
+    const iframeContainers = [];
+    
+    iframes.forEach(iframe => {
+        const container = iframe.closest('div');
+        if (container && container.parentNode === output) {
+            iframeContainers.push(container.cloneNode(true));
+        }
+    });
+    
+    output.innerHTML = '';
+    
+    iframeContainers.forEach(container => {
+        output.appendChild(container);
+    });
+    
+    scrollToBottom();
+}
+
 const devCommands = {
     'custom os': () => {
         if (!devToolsOpen) {
             return '<p class="error">Command not recognized. Type "help" for available commands.</p>';
         }
-        
-        customOsInstallationActive = true;
-        awaitingConfirmation = true;
-        
-        return `
-            <p class="error">⚠️ Warning: Installing a custom ROM can cause severe and irreversible damage to your device. It may corrupt critical system files, prevent the device from booting, disable core functions, or permanently harm hardware components. Only proceed if you fully understand the risks, as improper installation can render your device completely unusable.</p>
-            <p>Type YES to continue and install a custom os</p>
-            <p>Type NO to cancel the installation.</p>
-        `;
+
+        customOsInstallationActive = true;  
+        awaitingConfirmation = true;  
+          
+        return `  
+            <p class="error">⚠️ Warning: Installing a custom ROM can cause severe and irreversible damage to your device. It may corrupt critical system files, prevent the device from booting, disable core functions, or permanently harm hardware components. Only proceed if you fully understand the risks, as improper installation can render your device completely unusable.</p>  
+            <p>Type YES to continue and install a custom os</p>  
+            <p>Type NO to cancel the installation.</p>  
+        `;  
     }
 };
 
@@ -747,191 +767,189 @@ commands.dev = () => {
 
 function handleCustomOsInstallation(input) {
     const lowerInput = input.toLowerCase().trim();
-    
-    if (awaitingConfirmation) {
-        if (lowerInput === 'yes') {
-            awaitingConfirmation = false;
-            awaitingUrl = true;
-            return `
-                <p>Please enter the URL of the custom ROM you wish to install. Ensure the link is correct and points to a compatible ROM for this device. Any mistakes during installation can cause system instability, prevent the device from booting, or even permanently damage hardware. Double-check the source before proceeding.</p>
-            `;
-        } else if (lowerInput === 'no') {
-            customOsInstallationActive = false;
-            awaitingConfirmation = false;
-            return '<p>Custom OS installation cancelled.</p>';
-        } else {
-            return '<p>Please type YES to continue or NO to cancel.</p>';
-        }
-    }
-    
-    if (awaitingUrl) {
-        if (input.startsWith('http://') || input.startsWith('https://')) {
-            awaitingUrl = false;
-            customOsInstallationActive = false;
-            
-            inputField.disabled = true;
-            prompt.style.display = 'none';
-            
-            setTimeout(() => {
-                const installationSteps = [
-                    '[INFO] Initializing installation...',
-                    '[INFO] Verifying custom ROM integrity...',
-                    '[OK] ROM verified.',
-                    '[INFO] Backing up temporary system state...',
-                    '[INFO] Writing system files...',
-                    '[PROGRESS] ██████████ 45%',
-                    '[PROGRESS] ███████████████ 72%',
-                    '[INFO] Applying configuration settings...',
-                    '[WARNING] Certain features may be unstable.',
-                    '[OK] Installation complete.',
-                    '[INFO] Rebooting system...'
-                ];
-                
-                let stepIndex = 0;
-                const displayStep = () => {
-                    if (stepIndex < installationSteps.length) {
-                        const stepDiv = document.createElement('p');
-                        stepDiv.innerHTML = installationSteps[stepIndex];
-                        if (installationSteps[stepIndex].includes('[WARNING]')) {
-                            stepDiv.style.color = '#ffa500';
-                        } else if (installationSteps[stepIndex].includes('[OK]')) {
-                            stepDiv.style.color = '#4ade80';
-                        }
-                        output.appendChild(stepDiv);
-                        scrollToBottom();
-                        stepIndex++;
-                        setTimeout(displayStep, 800);
-                    } else {
-                        const iframeContainer = document.createElement('div');
-                        const iframe = document.createElement('iframe');
-                        iframe.src = input;
-                        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';
-                        iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';
+
+    if (awaitingConfirmation) {  
+        if (lowerInput === 'yes') {  
+            awaitingConfirmation = false;  
+            awaitingUrl = true;  
+            return `  
+                <p>Please enter the URL of the custom ROM you wish to install. Ensure the link is correct and points to a compatible ROM for this device. Any mistakes during installation can cause system instability, prevent the device from booting, or even permanently damage hardware. Double-check the source before proceeding.</p>  
+            `;  
+        } else if (lowerInput === 'no') {  
+            customOsInstallationActive = false;  
+            awaitingConfirmation = false;  
+            return '<p>Custom OS installation cancelled.</p>';  
+        } else {  
+            return '<p>Please type YES to continue or NO to cancel.</p>';  
+        }  
+    }  
+      
+    if (awaitingUrl) {  
+        if (input.startsWith('http://') || input.startsWith('https://')) {  
+            awaitingUrl = false;  
+            customOsInstallationActive = false;  
+              
+            inputField.disabled = true;  
+            prompt.style.display = 'none';  
+              
+            setTimeout(() => {  
+                const installationSteps = [  
+                    '[BOOT] Preparing installation...',  
+                    '[CHECK] ROM integrity check...',  
+                    '[OK] Check passed.',  
+                    '[SAVE] Backing up system snapshot...',  
+                    '[FLASH] Writing system partitions...',  
+                    '[PROGRESS] ██████████ 45%',  
+                    '[PROGRESS] ███████████████ 72%',  
+                    '[CONFIG] Applying default settings...',  
+                    '[WARN] Some modules may not be stable.',  
+                    '[OK] Flashing complete.',
+                    '[WIPE] erasing system...',
+                    '[WIPE] erasing userdata...',
+                    '[INFO] Rebooting system...',
+                ];  
+                  
+                let stepIndex = 0;  
+                const displayStep = () => {  
+                    if (stepIndex < installationSteps.length) {  
+                        const stepDiv = document.createElement('p');  
+                        stepDiv.innerHTML = installationSteps[stepIndex];  
+                        if (installationSteps[stepIndex].includes('[WARNING]')) {  
+                            stepDiv.style.color = '#ffa500';  
+                        } else if (installationSteps[stepIndex].includes('[OK]')) {  
+                            stepDiv.style.color = '#4ade80';  
+                        }  
+                        output.appendChild(stepDiv);  
+                        scrollToBottom();  
+                        stepIndex++;  
+                        setTimeout(displayStep, 800);  
+                    } else {  
+                        clearTerminalKeepIframe();
                         
-                        const iframeDiv = document.createElement('div');
-                        iframeDiv.style.cssText = 'width: 100%; height: 600px; border: 2px solid #4ade80; margin: 10px 0;';
-                        iframeDiv.appendChild(iframe);
-                        
-                        iframeContainer.innerHTML = '<p class="highlight">Custom OS Installation Complete - Loading new system...</p>';
-                        iframeContainer.appendChild(iframeDiv);
-                        
-                        let loadTimeout;
-                        let hasLoaded = false;
-                        
-                        const triggerPanic = () => {
-                            if (!hasLoaded) {
-                                clearTimeout(loadTimeout);
-                                const panicMessage = document.createElement('p');
-                                panicMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold;">[!!! KERNEL PANIC!!!]</span><br><span style="color: #ff0000;">System integrity compromised.<br>Unrecoverable error.<br>Corrupted sector: 0xDEADBEEF<br>Unable to load core modules.<br>System halted.</span>`;
-                                iframeContainer.appendChild(panicMessage);
-                                inputField.disabled = true;
-                                prompt.style.display = 'none';
-                            }
-                        };
-                        
-                        const markAsSuccess = () => {
-                            if (!hasLoaded) {
-                                hasLoaded = true;
-                                clearTimeout(loadTimeout);
-                                const successMsg = document.createElement('p');
-                                successMsg.textContent = `System successfully loaded from: ${input}`;
+                        const iframeContainer = document.createElement('div');  
+                        const iframe = document.createElement('iframe');  
+                        iframe.src = input;  
+                        iframe.style.cssText = 'width: 100%; height: 100%; border: none;';  
+                        iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups';  
+                          
+                        const iframeDiv = document.createElement('div');  
+                        iframeDiv.style.cssText = 'width: 100%; height: 600px; border: 2px solid #4ade80; margin: 10px 0;';  
+                        iframeDiv.appendChild(iframe);  
+                          
+                        iframeContainer.innerHTML = '<p class="highlight">Booting up...</p>';  
+                        iframeContainer.appendChild(iframeDiv);  
+                          
+                        let loadTimeout;  
+                        let hasLoaded = false;  
+                          
+                        const triggerPanic = () => {  
+                            if (!hasLoaded) {  
+                                clearTimeout(loadTimeout);  
+                                const panicMessage = document.createElement('p');  
+                                panicMessage.innerHTML = `<span style="color: #ff0000; font-weight: bold;">[!!! KERNEL PANIC!!!]</span><br><span style="color: #ff0000;">Failed integrity check on /system.<br>Updater process ended with ERROR: 7.<br>Corrupted block found on /data<br>Installation aborted due to fatal error.<br>not syncing.</span>`;  
+                                iframeContainer.appendChild(panicMessage);  
+                                inputField.disabled = true;  
+                                prompt.style.display = 'none';  
+                            }  
+                        };  
+                          
+                        const markAsSuccess = () => {  
+                            if (!hasLoaded) {  
+                                hasLoaded = true;  
+                                clearTimeout(loadTimeout);  
+                                const successMsg = document.createElement('p');  
+                                successMsg.innerHTML = `<span style="color: #4ade80;">System installed successfully</span>`;  
                                 iframeContainer.appendChild(successMsg);
-                            }
-                        };
-                        
-                        
-                        fetch(input, { 
-                            method: 'HEAD', 
-                            mode: 'no-cors',
-                            cache: 'no-cache'
-                        })
-                        .then(() => {
-                            
-                            iframe.onload = () => {
-                                setTimeout(markAsSuccess, 2000);
-                            };
-                            
-                            iframe.onerror = () => {
-                                triggerPanic();
-                            };
-                            
-                            
-                            loadTimeout = setTimeout(() => {
-                                
-                                try {
-                                    if (iframe.src === input || iframe.contentWindow) {
-                                        markAsSuccess();
-                                    } else {
-                                        triggerPanic();
-                                    }
-                                } catch(e) {
-                                    
-                                    markAsSuccess();
-                                }
-                            }, 8000);
-                        })
-                        .catch(() => {
-                            
-                            triggerPanic();
-                        });
-                        
-                        output.appendChild(iframeContainer);
-                        scrollToBottom();
-                    }
-                };
-                displayStep();
-            }, 500);
-            
-            return `<p>Starting installation from: ${input}</p>`;
-        } else {
-            return '<p class="error">Invalid URL format. Please enter a valid URL starting with http:// or https://</p>';
-        }
-    }
-    
+                            }  
+                        };  
+                          
+                        fetch(input, {   
+                            method: 'HEAD',   
+                            mode: 'no-cors',  
+                            cache: 'no-cache'  
+                        })  
+                        .then(() => {  
+                            iframe.onload = () => {  
+                                setTimeout(markAsSuccess, 2000);  
+                            };  
+                              
+                            iframe.onerror = () => {  
+                                triggerPanic();  
+                            };  
+                              
+                            loadTimeout = setTimeout(() => {  
+                                try {  
+                                    if (iframe.src === input || iframe.contentWindow) {  
+                                        markAsSuccess();  
+                                    } else {  
+                                        triggerPanic();  
+                                    }  
+                                } catch(e) {  
+                                    markAsSuccess();  
+                                }  
+                            }, 8000);  
+                        })  
+                        .catch(() => {  
+                            triggerPanic();  
+                        });  
+                          
+                        output.appendChild(iframeContainer);  
+                        scrollToBottom();  
+                    }  
+                };  
+                displayStep();  
+            }, 500);  
+              
+            return `<p>[IMAGE FLASH STARTED]: ${input}</p>`;  
+        } else {  
+            return '<p class="error">Invalid URL format. Please enter a valid URL starting with http:// or https://</p>';  
+        }  
+    }  
+      
     return null;
 }
 
 function executeCommand(input) {
     if (isSystemBricked) {
-        return '<p style="color: #ff6b6b;">System unresponsive.</p>';
+        return '<p style="color: #ff6b6b;">Failed to mount /system. No such file or directory.</p>';
     }
-    
-    const trimmedInput = input.trim();
-    if (!trimmedInput) {
-        return '';
-    }
-    
-    if (customOsInstallationActive) {
-        const customOsResult = handleCustomOsInstallation(trimmedInput);
-        if (customOsResult !== null) {
-            return customOsResult;
-        }
-    }
-    
-    const [command, ...args] = trimmedInput.split(' ');
-    const lowerCaseCommand = command.toLowerCase();
-    
-    if (devCommands[trimmedInput.toLowerCase()]) {
-        return devCommands[trimmedInput.toLowerCase()]();
-    }
-    
-    const commandFunction = commands[lowerCaseCommand];
-    
-    let outputResult;
-    if (typeof commandFunction === 'function') {
-        outputResult = commandFunction(args.join(' '));
-    } else {
-        outputResult = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
-    }
-    
-    if (trimmedInput) {
-        if (commandHistory[commandHistory.length - 1] !== trimmedInput) {
-            commandHistory.push(trimmedInput);
-        }
-        historyIndex = commandHistory.length;
-    }
-    
+
+    const trimmedInput = input.trim();  
+    if (!trimmedInput) {  
+        return '';  
+    }  
+      
+    if (customOsInstallationActive) {  
+        const customOsResult = handleCustomOsInstallation(trimmedInput);  
+        if (customOsResult !== null) {  
+            return customOsResult;  
+        }  
+    }  
+      
+    const [command, ...args] = trimmedInput.split(' ');  
+    const lowerCaseCommand = command.toLowerCase();  
+      
+    if (devCommands[trimmedInput.toLowerCase()]) {  
+        return devCommands[trimmedInput.toLowerCase()]();  
+    }  
+      
+    const commandFunction = commands[lowerCaseCommand];  
+      
+    let outputResult;  
+    if (typeof commandFunction === 'function') {  
+        outputResult = commandFunction(args.join(' '));  
+    } else {  
+        outputResult = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;  
+    }  
+      
+    if (trimmedInput) {  
+        if (commandHistory[commandHistory.length - 1] !== trimmedInput) {  
+            commandHistory.push(trimmedInput);  
+        }  
+        historyIndex = commandHistory.length;  
+    }  
+      
     return outputResult;
-                    }
+    }                                    
                         
                     
