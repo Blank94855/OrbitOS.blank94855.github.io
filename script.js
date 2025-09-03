@@ -48,6 +48,9 @@ function finalizeBootSequence() {
         <p>Welcome to <span class="highlight">OrbitOS</span></p>    
         <p>Type 'help' for a list of commands</p>    
         <p class="highlight">Security patch: 1 September 2025</p>    
+        <p class="highlight" style="color: red; font-weight: bold;">
+⚠️ WARNING: You are running a BETA version of OrbitOS! Features are incomplete and the system may BREAK unexpectedly.
+</p>
     `;    
     inputField.disabled = false;    
     prompt.style.display = 'inline';    
