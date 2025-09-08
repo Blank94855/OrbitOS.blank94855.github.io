@@ -415,7 +415,7 @@ const commands = {
     
     software: () => `    
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>    
-        <p></p>    
+        <p>September 8, 2025</p>    
             
        
         <p>- improved boot text</p>  
