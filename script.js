@@ -7,19 +7,20 @@ let terminalVisible = true;
 let stoppedProcesses = [];    
     
 const bootSequence = [    
-    "Initializing OS...",    
-    "Checking hardware compatibility...",    
-    "Loading kernel 5.4.2-1070-gki...",    
-    "Mounting root filesystem...",    
-    "Setting up system directories...",    
-    "Configuring network interfaces...",    
-    "Loading system modules...",    
-    "Initializing security protocols...",    
-    "Checking system integrity...",    
-    "Updating system components...",    
-    "Applying security patches...",    
-    "Starting system services...",    
-    "Loading user environment...",    
+      "Starting system...",  
+      "Loading kernel modules...",  
+      "Initializing cgroup subsystems...",  
+      "Mounting /system...",  
+      "Mounting /vendor...",  
+      "Mounting /data...",  
+      "Setting permissions...",  
+      "Starting ueventd...",  
+      "Starting logd...",  
+      "Starting healthd...",  
+      "Starting surfaceflinger...",  
+      "Starting servicemanager...",  
+      "Starting zygote...",  
+      "Boot completed."
 ];    
     
 function simulateBootSequence() {    
@@ -66,11 +67,11 @@ let historyIndex = -1;
 const config = {    
     username: 'root',    
     hostname: 'orbit',    
-    version: '3.4.1',    
+    version: '3.4.2',    
     lastBootTime: new Date().toLocaleString(),    
     systemInfo: {    
         os: 'OrbitOS',    
-        version: '3.4.1 - beta',    
+        version: '3.4.2 - beta',    
         kernel: '5.4.2-1070-gki',    
         architecture: 'x86_64',    
         memory: '4.0GiB',    
@@ -414,10 +415,10 @@ const commands = {
     
     software: () => `    
         <p class="highlight">OrbitOS ${config.version} Changelog:</p>    
-        <p>Orbit OS 3.4 upgrade.</p>    
+        <p>Orbit OS 3.4.1 update:</p>    
             
        
-        <p>✅ Major update released: The system now supports <span class="highlight">Custom OS Installation</span>. This feature allows you to load and run an entirely different interface directly inside the terminal, simulating the experience of switching to a brand-new operating system. Once activated, the console will fetch the specified source and display it as if the device had been rebooted into a different environment, giving you the freedom to explore alternate systems without leaving the shell.</p>  
+        <p>- improved boot text</p>  
     `,    
     
     weather: () => {    
