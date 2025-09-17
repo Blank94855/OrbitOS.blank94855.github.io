@@ -401,8 +401,7 @@ const commands = {
                 <ul>
                     <li>Removed files command (like ls, CD, cat) probably will come in future versions as I am remaking it</li>
                     <li>storage is now dynamic </li>
-                    <li>Now, Orbit os is closed source. The GitHub repo has been set as private</li>
-
+                
 
             </ul>
             `;
