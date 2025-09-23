@@ -44,8 +44,8 @@ function finalizeBootSequence() {
 let commandHistory = []; let historyIndex = -1;    
 
 const config = {    
-    username: 'root', hostname: 'orbit', version: '3.4.3', lastBootTime: new Date().toLocaleString(),    
-    systemInfo: { os: 'OrbitOS', version: '3.4.3 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
+    username: 'root', hostname: 'orbit', version: '3.5', lastBootTime: new Date().toLocaleString(),    
+    systemInfo: { os: 'OrbitOS', version: '3.5 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
     batteryInfo: { percentage: Math.floor(Math.random() * 100) + 1, charging: Math.random() > 0.5 },    
     weatherInfo: {    
         locations: [ { city: "Tokyo", country: "Japan" }, { city: "London", country: "UK" }, { city: "New York", country: "USA" }, { city: "Sydney", country: "Australia" }, { city: "Bucharest", country: "Romania" } ],    
@@ -84,7 +84,7 @@ function generateRandomWeather() {
 
 const terminalSites = {    
     'notavirus.zip': `<p class="highlight">--- notavirus.zip ---</p><p>Contents seem... suspicious. Handle with care.</p><p>  - totally_safe.exe</p><p>  - free_money.txt</p><p>  - instructions.rtf</p><p class="highlight">Use 'run [filename]' to execute.</p>`,    
-    'news.orb': `<p><span class="highlight">OrbitOS News Feed</span></p><p>-------------------</p><p>- OrbitOS version 3.4 is here.</p><p>- OrbitOS 3.4 brings custom os!!!!!.</p>`,    
+    'news.orb': `<p><span class="highlight">OrbitOS News Feed</span></p><p>-------------------</p><p>- OrbitOS version 3.5 is here.</p><p>- OrbitOS 3.5 has introduced a brand-new feature: customizable fonts. Users can now choose from a selection of clean, modern typefaces to give their terminal a fresh look. Whether for better readability or a touch of personal style, the new font options make OrbitOS feel more polished and user-friendly than ever..</p>`,    
     'about.os': `<p><span class="highlight">About OrbitOS</span></p><p>Version: ${config.systemInfo.version}</p><p>Kernel: ${config.systemInfo.kernel}</p><p>A lightweight, terminal-focused operating system simulation.</p><p>Developed for fun and learning.</p>`    
 };    
 
@@ -247,7 +247,7 @@ function handleCustomOsInstallation(input) {
             awaitingUrl = false; customOsInstallationActive = false; inputField.disabled = true; prompt.style.display = 'none';  
             
             setTimeout(() => {  
-                output.innerHTML = ''; // Clear terminal for installation log
+                output.innerHTML = ''; 
                 const steps = ["[BOOT] Preparing installation...", "[CHECK] ROM integrity check...", "[OK] Check passed.", "[FLASH] Writing system partitions...", "[PROGRESS] 45%", "[PROGRESS] 72%", "[OK] Flashing complete.", "[INFO] Rebooting system..."];  
                 let i = 0;  
                 const displayStep = () => {  
@@ -257,15 +257,15 @@ function handleCustomOsInstallation(input) {
                         output.appendChild(p);
                         scrollToBottom(); i++; setTimeout(displayStep, 800);  
                     } else {  
-                        // THIS IS THE FIX: Clear the terminal again before showing the final result.
+                    
                         output.innerHTML = ''; 
 
-                        // Add success message
+                        
                         const successMsg = document.createElement('p');
                         successMsg.innerHTML = `<span style="color: var(--terminal-success);">System installed successfully</span>`;
                         output.appendChild(successMsg);
 
-                        // Add the iframe
+                        
                         const iframeDiv = document.createElement('div');
                         iframeDiv.style.cssText = 'width:100%; height:600px; border: 2px solid var(--terminal-success); margin: 10px 0;';
                         iframeDiv.innerHTML = `<iframe src="${input}" style="width:100%; height:100%; border:none;"></iframe>`;
