@@ -146,12 +146,13 @@ const commands = {
             const updateMessage = document.createElement('div');
             updateMessage.innerHTML = `
                 <p style="color: var(--terminal-error);">No new updates found.</p>
-                <p>Last successful update: September 13, 2025</p>
-                <p>Version 3.4.3</p>
-                <p>Changelog:</p>
+                <p>Last successful update: September 23, 2025</p>
+                <p>Version 3.5</p>
+                <p>OrbitOS 3.5 upgrade:</p>
                 <ul>
-                    <li>Removed files command (like ls, CD, cat) probably will come in future versions as I am remaking it</li>
-                    <li>storage is now dynamic </li>
+                    <li>OrbitOS now lets you change the look of your system with new fonts. You can pick from a variety of clean and modern styles to make the terminal easier to read and more personal to you.
+</li>
+                    
                 </ul>
             `;
             output.appendChild(updateMessage);
