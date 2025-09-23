@@ -1,7 +1,8 @@
 const commands = {    
     help: () => `    
         <p><span class="highlight">Available Commands:</span></p>    
-        <p>help           - Shows this help message</p>    
+        <p>help           - Shows this help message</p>
+        <p>fonts          - Change the terminal font</p>
         <p>clear          - Clears the terminal screen</p>    
         <p>echo [text]    - Prints the specified text</p>    
         <p>run [filename] - Executes a specified file (if runnable)</p>    
@@ -23,6 +24,26 @@ const commands = {
         <p>dev            - access dev menu (custom os and etc)
     `,    
 
+    fonts: (args) => {
+        const fontNumber = parseInt(args.trim());
+        if (!args || isNaN(fontNumber)) {
+            return `
+                <p>Available fonts:</p>
+                <p>1. JetBrains Mono (Default)</p>
+                <p>2. Fira Code</p>
+                <p>3. Source Code Pro</p>
+                <p>4. IBM Plex Mono</p>
+                <p>5. Anonymous Pro</p>
+                <p>Usage: fonts [number]</p>
+            `;
+        }
+        if (applyFont(fontNumber)) {
+             return `<p>Font updated successfully.</p>`;
+        } else {
+            return `<p class="error-message">Error: Invalid font number. Please choose a number between 1 and 5.</p>`;
+        }
+    },
+
     clear: () => {    
         output.innerHTML = '';    
         return '';    
@@ -39,7 +60,7 @@ const commands = {
             setTimeout(triggerSystemBrick, 1500);    
             return generateChaoticOutput() + `<p class="highlight">Executing ${filename}...</p>`;    
         } else {    
-            return `<p>Error: File '${filename}' not found or cannot be executed.</p>`;    
+            return `<p class="error-message">Error: File '${filename}' not found or cannot be executed.</p>`;    
         }    
     },    
 
