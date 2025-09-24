@@ -82,24 +82,6 @@ function generateRandomWeather() {
     return currentWeatherData;    
 }    
 
-const terminalSites = {    
-    'notavirus.zip': `<p class="highlight">--- notavirus.zip ---</p><p>Contents seem... suspicious. Handle with care.</p><p>  - totally_safe.exe</p><p>  - free_money.txt</p><p>  - instructions.rtf</p><p class="highlight">Use 'run [filename]' to execute.</p>`,    
-    'news.orb': `<p><span class="highlight">OrbitOS News Feed</span></p><p>-------------------</p><p>- OrbitOS version 3.5 is here.</p><p>- OrbitOS 3.5 has introduced a brand-new feature: customizable fonts. Users can now choose from a selection of clean, modern typefaces to give their terminal a fresh look. Whether for better readability or a touch of personal style, the new font options make OrbitOS feel more polished and user-friendly than ever..</p>`,    
-    'about.os': `<p><span class="highlight">About OrbitOS</span></p><p>Version: ${config.systemInfo.version}</p><p>Kernel: ${config.systemInfo.kernel}</p><p>A lightweight, terminal-focused operating system simulation.</p><p>Developed for fun and learning.</p>`    
-};    
-
-const maliciousFiles = ['totally_safe.exe', 'free_money.txt', 'instructions.rtf'];    
-function generateChaoticOutput() { return `<pre class="error-message">${Array(50).fill(0).map(() => Array(80).fill(0).map(() => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`"[Math.floor(Math.random() * 90)]).join('')).join('\n')}</pre>`; }    
-
-function triggerSystemBrick() {    
-    isSystemBricked = true; inputField.disabled = true; prompt.style.display = 'none';    
-    const p = document.createElement('p');
-    p.classList.add('error-message');
-    p.innerHTML = `<span class="highlight">[!!! KERNEL PANIC !!!]</span><br>E: Unable to mount /system (Invalid argument). E: failed to mount /data (No such file or directory).<br>E: unable to mount /cache (I/O error)<br>E: failed to mount /vendor (Invalid argument)<br>E: init: terminating service. Please reboot the system.`;    
-    output.appendChild(p);
-    scrollToBottom();    
-}    
-
 function toggleTerminal(visible) { terminalElement.style.display = visible ? 'block' : 'none'; terminalVisible = visible; if(visible) inputField.focus(); }    
 
 function systemHalt() {    
@@ -150,13 +132,9 @@ function executeCommand(input) {
     if (isSystemBricked) return '<p class="error-message">System halted. Please reboot.</p>';
     const trimmedInput = input.trim();  
     if (!trimmedInput) return '';  
-    if (customOsInstallationActive) {  
-        const customOsResult = handleCustomOsInstallation(trimmedInput);  
-        if (customOsResult !== null) return customOsResult;  
-    }  
+      
     const [command, ...args] = trimmedInput.split(' ');  
     const lowerCaseCommand = command.toLowerCase();  
-    if (devCommands[trimmedInput.toLowerCase()]) return devCommands[trimmedInput.toLowerCase()]();  
     const commandFunction = commands[lowerCaseCommand];  
     let outputResult;  
     if (typeof commandFunction === 'function') {  
@@ -227,58 +205,4 @@ inputField.addEventListener('keydown', (e) => {
 });    
 
 document.querySelector('.terminal').addEventListener('click', () => { if (!isSystemBricked) inputField.focus(); });
-
-let devToolsOpen = false, customOsInstallationActive = false, awaitingConfirmation = false, awaitingUrl = false;
-
-function handleCustomOsInstallation(input) {
-    const lowerInput = input.toLowerCase().trim();
-    if (awaitingConfirmation) {  
-        if (lowerInput === 'yes') {  
-            awaitingConfirmation = false; awaitingUrl = true;  
-            return `<p>Please enter the URL of the custom ROM you wish to install.</p>`;  
-        } else if (lowerInput === 'no') {  
-            customOsInstallationActive = false; awaitingConfirmation = false;  
-            return '<p>Custom OS installation cancelled.</p>';  
-        } else { return '<p>Please type YES to continue or NO to cancel.</p>'; }  
-    }  
-
-    if (awaitingUrl) {  
-        if (input.startsWith('http://') || input.startsWith('https://')) {  
-            awaitingUrl = false; customOsInstallationActive = false; inputField.disabled = true; prompt.style.display = 'none';  
-            
-            setTimeout(() => {  
-                output.innerHTML = ''; 
-                const steps = ["[BOOT] Preparing installation...", "[CHECK] ROM integrity check...", "[OK] Check passed.", "[FLASH] Writing system partitions...", "[PROGRESS] 45%", "[PROGRESS] 72%", "[OK] Flashing complete.", "[INFO] Rebooting system..."];  
-                let i = 0;  
-                const displayStep = () => {  
-                    if (i < steps.length) {  
-                        const p = document.createElement('p');
-                        p.textContent = steps[i];
-                        output.appendChild(p);
-                        scrollToBottom(); i++; setTimeout(displayStep, 800);  
-                    } else {  
-                    
-                        output.innerHTML = ''; 
-
-                        
-                        const successMsg = document.createElement('p');
-                        successMsg.innerHTML = `<span style="color: var(--terminal-success);">System installed successfully</span>`;
-                        output.appendChild(successMsg);
-
-                        
-                        const iframeDiv = document.createElement('div');
-                        iframeDiv.style.cssText = 'width:100%; height:600px; border: 2px solid var(--terminal-success); margin: 10px 0;';
-                        iframeDiv.innerHTML = `<iframe src="${input}" style="width:100%; height:100%; border:none;"></iframe>`;
-                        output.appendChild(iframeDiv);
-                        scrollToBottom();  
-                    }  
-                };  
-                displayStep();  
-            }, 500);  
-            return `<p>[IMAGE FLASH STARTED]: ${input}</p>`;  
-        } else { return '<p class="error-message">Invalid URL format. Please enter a valid URL.</p>'; }  
-    }  
-    return null;
-}
-
 
