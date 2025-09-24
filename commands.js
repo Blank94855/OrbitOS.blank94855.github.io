@@ -15,13 +15,12 @@ const commands = {
         <p>weather        - Shows weather information</p>    
         <p>processes      - Lists running processes</p>    
         <p>calc [expr]    - Calculate mathematical expression</p>    
-        <p>browser [site] - Access predefined terminal websites</p>    
+        <p>browser [url]  - Opens a URL in an iframe</p>
         <p>stop [process] - Stop a process or component</p>    
         <p>fortune        - Get a random fortune message</p>    
         <p>cowsay [text]  - Display a cow saying your message</p>    
         <p>shutdown       - Shutsdown OrbitOS</p>    
-        <p>reboot         - Reboots OrbitOS</p>    
-        <p>dev            - access dev menu (custom os and etc)
+        <p>reboot         - Reboots OrbitOS</p>
     `,    
 
     fonts: (args) => {
@@ -52,16 +51,7 @@ const commands = {
     echo: (args) => args ? `<p>${args}</p>` : '<p>Nothing to echo.</p>',    
 
     run: (args) => {    
-        const filename = args.trim();    
-        if (!filename) {    
-            return '<p>Usage: run [filename]</p>';    
-        }    
-        if (maliciousFiles.includes(filename)) {    
-            setTimeout(triggerSystemBrick, 1500);    
-            return generateChaoticOutput() + `<p class="highlight">Executing ${filename}...</p>`;    
-        } else {    
-            return `<p class="error-message">Error: File '${filename}' not found or cannot be executed.</p>`;    
-        }    
+        return `<p class="error-message">Error: No runnable files found in the current system.</p>`;
     },    
 
     stop: (args) => {    
@@ -147,12 +137,13 @@ const commands = {
             updateMessage.innerHTML = `
                 <p style="color: var(--terminal-error);">No new updates found.</p>
                 <p>Last successful update: September 23, 2025</p>
-                <p>Version 3.5</p>
+                <p>Version 3.5.1</p>
                 <p>OrbitOS 3.5 upgrade:</p>
                 <ul>
                     <li>OrbitOS now lets you change the look of your system with new fonts. You can pick from a variety of clean and modern styles to make the terminal easier to read and more personal to you.
 </li>
-                    
+                  <li>"browser" command can now load real sites!
+</li>
                 </ul>
             `;
             output.appendChild(updateMessage);
@@ -226,22 +217,24 @@ const commands = {
             return '<p class="error-message">Browser process is stopped. Use "reboot" to restore functionality.</p>';    
         }    
 
-        const siteName = args.trim();    
-        if (!siteName) {    
-             const availableSites = Object.keys(terminalSites).join(', ');    
-            return `<p>Usage: browser [site_name]</p><p>Available sites: ${availableSites || 'None'}</p>`;    
-        }    
+        const url = args.trim();
+        if (!url) {    
+            return `<p>Usage: browser [url]</p><p>Example: browser https://example.com</p>`;
+        }
 
-        const siteContent = terminalSites[siteName];    
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            return `<p class="error-message">Invalid URL. Please include http:// or https://</p>`;
+        }
 
-        if (siteContent) {    
-            let browserOutput = `<p>Connecting to ${siteName}...</p>`;    
-            browserOutput += `<p>Loading content...</p>`;    
-            browserOutput += siteContent;    
-            return browserOutput;    
-        } else {    
-            return `<p class="error-message">Error 404: Site '${siteName}' not found in terminal network.</p>`;    
-        }    
+        return `
+            <p class="highlight" style="color: var(--terminal-error);">
+            ⚠️ OrbitOS uses a iframe to load sites, however not all sites can load.
+            </p>
+            <p>Loading ${url}...</p>
+            <div style="width:100%; height:600px; border: 1px solid #ccc; margin-top: 10px; background-color: white;">
+                <iframe src="${url}" style="width:100%; height:100%; border:none;" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        `;
     },
 
     fortune: () => {
@@ -280,28 +273,5 @@ const commands = {
 ${textLine}
 ${bottomLine}${cow}</pre>`;
     }    
-};    
-
-const devCommands = {
-    'custom os': () => {
-        if (!devToolsOpen) {
-            return '<p class="error-message">Command not recognized. Type "help" for available commands.</p>';
-        }
-
-        customOsInstallationActive = true;  
-        awaitingConfirmation = true;  
-
-        return `  
-            <p class="error-message">⚠️ Warning: Installing a custom ROM can cause severe and irreversible damage to your device. It may corrupt critical system files, prevent the device from booting, disable core functions, or permanently harm hardware components. Only proceed if you fully understand the risks, as improper installation can render your device completely unusable.</p>  
-            <p>Type YES to continue and install a custom os</p>  
-            <p>Type NO to cancel the installation.</p>  
-        `;  
-    }
 };
-
-commands.dev = () => {
-    devToolsOpen = true;
-    return `<p class="highlight">Developer Tools Activated</p><p>Additional commands unlocked.</p><p>Available dev commands: Custom os</p><p>Use with caution.</p>`;
-};
-
 
