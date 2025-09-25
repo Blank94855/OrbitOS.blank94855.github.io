@@ -7,7 +7,7 @@ const commands = {
         <p>echo [text]    - Prints the specified text</p>    
         <p>run [filename] - Executes a specified file (if runnable)</p>    
         <p>date           - Shows current date and time</p>    
-        <p>neofetch       - Displays system information</p>    
+        <p>fastfetch       - Displays system information</p>    
         <p>whoami         - Shows current user</p>    
         <p>history        - Shows command history</p>    
         <p>battery        - Shows battery status</p>    
@@ -87,7 +87,7 @@ const commands = {
 
     date: () => `<p>${new Date().toLocaleString()}</p>`,    
 
-    neofetch: () => {
+    fastfetch: () => {
         const { totalDisk, freeDisk, totalRAM, freeRAM } = config.dynamicStorage;
         return `
             <pre class="highlight" style="font-family: 'JetBrains Mono', monospace;">    
