@@ -188,16 +188,29 @@ const commands = {
         return response;    
     },    
 
-    reboot: async () => {    
+    reboot: () => {    
         output.innerHTML = '<p>Rebooting system...</p>';    
         inputField.disabled = true;    
         prompt.style.display = 'none';    
 
-        await new Promise(resolve => setTimeout(resolve, 1500));    
-        await simulateBootSequence();    
-        finalizeBootSequence();    
+        // This is a self-invoking async function.
+        // It allows the reboot process to happen asynchronously,
+        // while the main 'reboot' function can immediately return an empty string.
+        // This prevents '[object Promise]' from being printed to the terminal.
+        (async () => {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Assuming simulateBootSequence and finalizeBootSequence are defined elsewhere in your code
+            if (typeof simulateBootSequence === 'function') {
+                await simulateBootSequence(); 
+            }
+            if (typeof finalizeBootSequence === 'function') {
+               finalizeBootSequence();
+            }
+        })();
+        
+        // Return an empty string so nothing is printed after the command runs.
         return '';    
-    },    
+    },
 
     calc: (args) => {    
         try {    
@@ -274,4 +287,5 @@ ${textLine}
 ${bottomLine}${cow}</pre>`;
     }    
 };
+
 
