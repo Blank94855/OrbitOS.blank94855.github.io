@@ -135,14 +135,15 @@ const commands = {
         setTimeout(() => {
             const updateMessage = document.createElement('div');
             updateMessage.innerHTML = `
-                <p style="color: var(--terminal-error);">No new updates found.</p>
-                <p>Last successful update: September 23, 2025</p>
-                <p>Version 3.5.1</p>
-                <p>OrbitOS 3.5 upgrade:</p>
+                <p style="color: var(--terminal-error);">You are using the latest version!</p>
+                <p>Last successful update: September 27, 2025</p>
+                <p>Version 3.5.2</p>
+                <p></p>
                 <ul>
-                    <li>OrbitOS now lets you change the look of your system with new fonts. You can pick from a variety of clean and modern styles to make the terminal easier to read and more personal to you.
+                    <li>Fixed a bug that caused reboot command to glitch
 </li>
-                  <li>"browser" command can now load real sites!
+                  <li>"renamed "neofetch" to "fastfetch" thanks to @
+revivelinux for contributing.
 </li>
                 </ul>
             `;
@@ -193,13 +194,10 @@ const commands = {
         inputField.disabled = true;    
         prompt.style.display = 'none';    
 
-        // This is a self-invoking async function.
-        // It allows the reboot process to happen asynchronously,
-        // while the main 'reboot' function can immediately return an empty string.
-        // This prevents '[object Promise]' from being printed to the terminal.
+        
         (async () => {
             await new Promise(resolve => setTimeout(resolve, 1500));
-            // Assuming simulateBootSequence and finalizeBootSequence are defined elsewhere in your code
+            
             if (typeof simulateBootSequence === 'function') {
                 await simulateBootSequence(); 
             }
@@ -208,7 +206,6 @@ const commands = {
             }
         })();
         
-        // Return an empty string so nothing is printed after the command runs.
         return '';    
     },
 
