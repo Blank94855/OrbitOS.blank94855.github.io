@@ -143,8 +143,8 @@ const commands = {
                     <li>The browser has been completely revamped with a sleek, modern design that replaces the old boxy layout, featuring smooth, rounded edges, subtle shadows, and refined spacing. Websites now load inside a polished iframe container that feels more integrated and visually appealing, providing a cleaner, more immersive browsing experience overall.
 </li>                
                 
-        </li>Added a new rm -rf command along with a basic BIOS interface, giving users low-level access to system operations. Right now, the BIOS is limited to executing rm -rf, but this is just the beginning. Starting with version 4.0, the BIOS will expand its capabilities, allowing full system control such as restarting the system, managing core processes, and performing other advanced administrative functions, paving the way for a more powerful and flexible user experience.
-
+</li>Added a new rm -rf command along with a basic BIOS interface, giving users low-level access to system operations. Right now, the BIOS is limited to executing rm -rf, but this is just the beginning. Starting with version 4.0, the BIOS will expand its capabilities, allowing full system control such as restarting the system, managing core processes, and performing other advanced administrative functions, paving the way for a more powerful and flexible user experience.
+</li>
 
           </ul>
             `;
