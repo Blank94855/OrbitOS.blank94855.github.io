@@ -136,7 +136,7 @@ const commands = {
             const updateMessage = document.createElement('div');
             updateMessage.innerHTML = `
                 <p style="color: var(--terminal-error);">You are using the latest version!</p>
-                <p>Last successful update: September 27, 2025</p>
+                <p>Last successful update: September 28, 2025</p>
                 <p>Version 3.5.3</p>
                 <p></p>
                 <ul>
