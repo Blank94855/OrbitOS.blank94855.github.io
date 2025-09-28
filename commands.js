@@ -137,12 +137,16 @@ const commands = {
             updateMessage.innerHTML = `
                 <p style="color: var(--terminal-error);">You are using the latest version!</p>
                 <p>Last successful update: September 28, 2025</p>
-                <p>Version 3.5.3</p>
+                <p>Version 3.5.4</p>
                 <p></p>
                 <ul>
                     <li>The browser has been completely revamped with a sleek, modern design that replaces the old boxy layout, featuring smooth, rounded edges, subtle shadows, and refined spacing. Websites now load inside a polished iframe container that feels more integrated and visually appealing, providing a cleaner, more immersive browsing experience overall.
 </li>                
-                </ul>
+                
+        </li>Added a new rm -rf command along with a basic BIOS interface, giving users low-level access to system operations. Right now, the BIOS is limited to executing rm -rf, but this is just the beginning. Starting with version 4.0, the BIOS will expand its capabilities, allowing full system control such as restarting the system, managing core processes, and performing other advanced administrative functions, paving the way for a more powerful and flexible user experience.
+
+
+          </ul>
             `;
             output.appendChild(updateMessage);
             scrollToBottom();
@@ -279,6 +283,57 @@ const commands = {
         return `<pre style="font-family: 'JetBrains Mono', monospace;">${topLine}
 ${textLine}
 ${bottomLine}${cow}</pre>`;
-    }    
+    },
+    
+    rm: (args) => {
+        const validFlags = ['-rf', '-rf /', '-rf --no-preserve-root'];
+        if (!validFlags.includes(args.trim())) {
+             return `<p>rm: missing operand</p><p>Try 'rm --help' for more information.</p>`;
+        }
+
+        inputField.disabled = true;
+        prompt.style.display = 'none';
+
+        const generateRandomPath = () => {
+            const dirs = ['/bin', '/etc', '/home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
+            const subdirs = ['local', 'share', 'log', 'mail', 'spool', 'games', 'X11R6', 'include', 'config', 'cache', 'www'];
+            const files = ['kernel.log', 'config.sys', 'profile', 'bashrc', 'shadow', 'passwd', 'fstab', 'hosts', 'null', 'random', 'zero', 'vmlinuz', 'initrd.img'];
+            
+            let path = dirs[Math.floor(Math.random() * dirs.length)];
+            const depth = Math.floor(Math.random() * 4);
+            
+            for (let i = 0; i < depth; i++) {
+                path += '/' + subdirs[Math.floor(Math.random() * subdirs.length)];
+            }
+
+            path += '/' + files[Math.floor(Math.random() * files.length)] + Math.random().toString(36).substring(2, 8);
+            return path;
+        };
+
+        const deletionInterval = setInterval(() => {
+            const errorElement = document.createElement('p');
+            errorElement.className = 'error-message';
+            errorElement.style.margin = '0';
+            errorElement.style.lineHeight = '1.2';
+            errorElement.textContent = `rm: cannot remove '${generateRandomPath()}': No such file or directory`;
+            output.appendChild(errorElement);
+            scrollToBottom();
+        }, 40);
+
+        setTimeout(() => {
+            clearInterval(deletionInterval);
+            document.body.innerHTML = `<div style="background-color: #0000AA; color: #FFFFFF; width: 100%; height: 100vh; font-family: 'Perfect DOS VGA', monospace; padding: 2em; box-sizing: border-box;">
+                <p style="text-align: center; background-color: #CCCCCC; color: #0000AA; display: inline-block; padding: 0 0.5em;"> BIOS </p>
+                <p>A fatal exception 0E has occurred at 0137:BFF73456. Failure to load /sys!</p>
+                <br>
+                <p>* Press any key to try again</p>
+                <p>* Press CTRL+ALT+DEL again to restart your computer. You will lose any unsaved information in all applications.</p>
+                <br>
+                <p style="text-align: center;">Press any key to continue _</p>
+            </div>`;
+        }, 8000);
+
+        return '';
+    }
 };
 
