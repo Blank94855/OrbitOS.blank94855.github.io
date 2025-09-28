@@ -44,8 +44,8 @@ function finalizeBootSequence() {
 let commandHistory = []; let historyIndex = -1;    
 
 const config = {    
-    username: 'root', hostname: 'orbit', version: '3.5.2', lastBootTime: new Date().toLocaleString(),    
-    systemInfo: { os: 'OrbitOS', version: '3.5.2 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
+    username: 'root', hostname: 'orbit', version: '3.5.3', lastBootTime: new Date().toLocaleString(),    
+    systemInfo: { os: 'OrbitOS', version: '3.5.3 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
     batteryInfo: { percentage: Math.floor(Math.random() * 100) + 1, charging: Math.random() > 0.5 },    
     weatherInfo: {    
         locations: [ { city: "Tokyo", country: "Japan" }, { city: "London", country: "UK" }, { city: "New York", country: "USA" }, { city: "Sydney", country: "Australia" }, { city: "Bucharest", country: "Romania" } ],    
@@ -132,7 +132,7 @@ function executeCommand(input) {
     if (isSystemBricked) return '<p class="error-message">System halted. Please reboot.</p>';
     const trimmedInput = input.trim();  
     if (!trimmedInput) return '';  
-      
+
     const [command, ...args] = trimmedInput.split(' ');  
     const lowerCaseCommand = command.toLowerCase();  
     const commandFunction = commands[lowerCaseCommand];  
