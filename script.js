@@ -44,8 +44,8 @@ function finalizeBootSequence() {
 let commandHistory = []; let historyIndex = -1;    
 
 const config = {    
-    username: 'root', hostname: 'orbit', version: '3.5.3', lastBootTime: new Date().toLocaleString(),    
-    systemInfo: { os: 'OrbitOS', version: '3.5.3 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
+    username: 'root', hostname: 'orbit', version: '3.5.4', lastBootTime: new Date().toLocaleString(),    
+    systemInfo: { os: 'OrbitOS', version: '3.5.4 - beta', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },    
     batteryInfo: { percentage: Math.floor(Math.random() * 100) + 1, charging: Math.random() > 0.5 },    
     weatherInfo: {    
         locations: [ { city: "Tokyo", country: "Japan" }, { city: "London", country: "UK" }, { city: "New York", country: "USA" }, { city: "Sydney", country: "Australia" }, { city: "Bucharest", country: "Romania" } ],    
