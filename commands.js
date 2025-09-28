@@ -137,14 +137,11 @@ const commands = {
             updateMessage.innerHTML = `
                 <p style="color: var(--terminal-error);">You are using the latest version!</p>
                 <p>Last successful update: September 27, 2025</p>
-                <p>Version 3.5.2</p>
+                <p>Version 3.5.3</p>
                 <p></p>
                 <ul>
-                    <li>Fixed a bug that caused reboot command to glitch
-</li>
-                  <li>"renamed "neofetch" to "fastfetch" thanks to @
-revivelinux for contributing.
-</li>
+                    <li>The browser has been completely revamped with a sleek, modern design that replaces the old boxy layout, featuring smooth, rounded edges, subtle shadows, and refined spacing. Websites now load inside a polished iframe container that feels more integrated and visually appealing, providing a cleaner, more immersive browsing experience overall.
+</li>                
                 </ul>
             `;
             output.appendChild(updateMessage);
@@ -194,10 +191,10 @@ revivelinux for contributing.
         inputField.disabled = true;    
         prompt.style.display = 'none';    
 
-        
+
         (async () => {
             await new Promise(resolve => setTimeout(resolve, 1500));
-            
+
             if (typeof simulateBootSequence === 'function') {
                 await simulateBootSequence(); 
             }
@@ -205,7 +202,7 @@ revivelinux for contributing.
                finalizeBootSequence();
             }
         })();
-        
+
         return '';    
     },
 
@@ -241,7 +238,7 @@ revivelinux for contributing.
             ⚠️ OrbitOS uses a iframe to load sites, however not all sites can load.
             </p>
             <p>Loading ${url}...</p>
-            <div style="width:100%; height:600px; border: 1px solid #ccc; margin-top: 10px; background-color: white;">
+            <div style="width:100%; height:600px; border: 1px solid #444; margin-top: 10px; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); overflow: hidden;">
                 <iframe src="${url}" style="width:100%; height:100%; border:none;" sandbox="allow-scripts allow-same-origin"></iframe>
             </div>
         `;
@@ -284,5 +281,4 @@ ${textLine}
 ${bottomLine}${cow}</pre>`;
     }    
 };
-
 
