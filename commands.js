@@ -324,7 +324,7 @@ ${bottomLine}${cow}</pre>`;
             clearInterval(deletionInterval);
             document.body.innerHTML = `<div style="background-color: #0000AA; color: #FFFFFF; width: 100%; height: 100vh; font-family: 'Perfect DOS VGA', monospace; padding: 2em; box-sizing: border-box;">
                 <p style="text-align: center; background-color: #CCCCCC; color: #0000AA; display: inline-block; padding: 0 0.5em;"> BIOS </p>
-                <p>A fatal exception 0E has occurred at 0137:BFF73456. Failure to load /sys!</p>
+                <p>A fatal exception 0E has occurred at 0137:BFF73456. /sys could not be mounted.</p>
                 <br>
                 <p>* Press any key to try again</p>
                 <p>* Press CTRL+ALT+DEL again to restart your computer. You will lose any unsaved information in all applications.</p>
