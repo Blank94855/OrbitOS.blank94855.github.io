@@ -11,7 +11,8 @@ const commands = {
         <p>whoami         - Shows current user</p>    
         <p>history        - Shows command history</p>    
         <p>battery        - Shows battery status</p>    
-        <p>software       - Shows system changelog</p>    
+        <p>software       - Shows system changelog</p>
+        <p>eol            - Displays the OrbitOS 3.x End-Of-Life notice</p>
         <p>weather        - Shows weather information</p>    
         <p>processes      - Lists running processes</p>    
         <p>calc [expr]    - Calculate mathematical expression</p>    
@@ -151,6 +152,15 @@ const commands = {
 
         return checkMessage;
     },
+
+    eol: () => `
+        <p><span class="highlight">OrbitOS 3.x End of Life (EOL) Notice</span></p>
+        <p>Starting <span class="highlight">1 February 2026</span>, OrbitOS 3.x is officially going EOL (end of life). Basically, no more fixes, updates, or support for it. The reason? We’re moving full focus to the big upgrade: OrbitOS 4.0.</p>
+        <p>Right now 4.0 is still in Alpha, but it’s already shaping up to be way bigger than 3.x ever was. If all goes to plan, the full release should land around <span class="highlight">November or December 2025</span>, so everyone has time to try it out before 3.x gets sunset.</p>
+        <p>If you’re still rocking 3.x, it’s a good idea to start thinking about switching over soon. 4.0 brings tons of new features, better performance, and tighter security that 3.x just won’t be getting.</p>
+        <p>👉 You can check out the current Alpha build here:</p>
+        <p><a href="https://blank94855.github.io/OrbitOS--4.0-alpha.blank94855.github.io/" target="_blank" class="highlight">https://blank94855.github.io/OrbitOS--4.0-alpha.blank94855.github.io/</a></p>
+    `,
 
     weather: () => {    
         const weather = generateRandomWeather();    
