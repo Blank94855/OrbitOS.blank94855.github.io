@@ -141,7 +141,7 @@ const commands = {
                 <p>Version 3.5.4</p>
                 <p></p>
                 <ul>
-                    </li>• Added a new rm -rf command along with a basic BIOS interface, giving users low-level access to system operations. Right now, the BIOS is limited to executing rm -rf, but this is just the beginning. Starting with version 4.0, the BIOS will expand its capabilities, allowing full system control such as restarting the system, managing core processes, and performing other advanced administrative functions, paving the way for a more powerful and flexible user experience.
+                    </li>• Added a new rm -rf command along with a basic BIOS interface, giving users low-level access to system operations. The 3.x branch will continue to receive new feature components and quality of life improvements, such as expanded basic BIOS management options and security patches. Major core rewrites and large features are reserved for the 4.0 branch.
 </li>             
                 
           </ul>
@@ -155,11 +155,11 @@ const commands = {
 
     "4.0": () => `
         <p><span class="highlight">Introducing OrbitOS 4.0 "alpha" - The Next Leap Forward</span></p>
-        <p>While OrbitOS 3.x will continue to be a stable and supported platform, all new feature development will be focused on OrbitOS 4.0. We're building the future, and it's shaping up to be our biggest upgrade ever.</p>
+        <p>OrbitOS 3.x will continue to be a stable and actively supported platform, receiving new features and essential updates. The major core redesign and experimental features, however, are focused on OrbitOS 4.0.</p>
         <br>
         <p><span class="highlight">Key Features in 4.0:</span></p>
         <ul>
-            <li><span class="highlight">• Redesigned UI ("Nebula"):</span> A more modern, intuitive, and customizable user interface.</li>
+            <li><span class="highlight">• Redesigned UI ("Midnight Blue"):</span> A more modern, intuitive, and customizable user interface.</li>
             <li><span class="highlight">• Enhanced Performance Core:</span> Faster boot times, improved process management, and better resource allocation.</li>
             <li><span class="highlight">• More commands:</span> many new commands</li>
             <li><span class="highlight">• Expanded BIOS Controls:</span> More low-level system management options from the command line.</li>
@@ -299,7 +299,7 @@ const commands = {
 ${textLine}
 ${bottomLine}${cow}</pre>`;
     },
-    
+
     rm: (args) => {
         const validFlags = ['-rf', '-rf /', '-rf --no-preserve-root'];
         if (!validFlags.includes(args.trim())) {
@@ -313,10 +313,10 @@ ${bottomLine}${cow}</pre>`;
             const dirs = ['/bin', '/etc', '/home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
             const subdirs = ['local', 'share', 'log', 'mail', 'spool', 'games', 'X11R6', 'include', 'config', 'cache', 'www'];
             const files = ['kernel.log', 'config.sys', 'profile', 'bashrc', 'shadow', 'passwd', 'fstab', 'hosts', 'null', 'random', 'zero', 'vmlinuz', 'initrd.img'];
-            
+
             let path = dirs[Math.floor(Math.random() * dirs.length)];
             const depth = Math.floor(Math.random() * 4);
-            
+
             for (let i = 0; i < depth; i++) {
                 path += '/' + subdirs[Math.floor(Math.random() * subdirs.length)];
             }
@@ -351,5 +351,4 @@ ${bottomLine}${cow}</pre>`;
         return '';
     }
 };
-
 
