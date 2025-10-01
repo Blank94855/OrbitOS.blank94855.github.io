@@ -30,9 +30,10 @@ function simulateBootSequence() {
 
 function finalizeBootSequence() {
     output.innerHTML = `
-        <p>Welcome to <span class="highlight">OrbitOS</span> - Stable Version</p>
-        <p>Type 'help' for a list of commands</p>
-        <p class="highlight">Security patch: 1 October 2025</p>`;
+        <p>Welcome to <span class="highlight">OrbitOS</span></p>
+        <p>This is a stable release.</p>
+        <p>Type 'help' for a list of commands.</p>
+        <p class="highlight">Security patch: 1 September 2025</p>`;
     inputField.disabled = false; prompt.style.display = 'inline'; inputField.focus();
     prompt.textContent = `${config.username}@${config.hostname}:~$ `;
     terminalVisible = true; stoppedProcesses = [];
@@ -42,7 +43,7 @@ let commandHistory = []; let historyIndex = -1;
 
 const config = {
     username: 'root', hostname: 'orbit', lastBootTime: new Date(),
-    systemInfo: { os: 'OrbitOS', version: '3.5.5', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },
+    systemInfo: { os: 'OrbitOS', version: '3.5.5 - stable', kernel: '5.4.2-1070-gki', architecture: 'x86_64' },
     batteryInfo: { percentage: Math.floor(Math.random() * 100) + 1, charging: Math.random() > 0.5 },
     weatherInfo: {
         locations: [ { city: "Tokyo", country: "Japan" }, { city: "London", country: "UK" }, { city: "New York", country: "USA" }, { city: "Sydney", country: "Australia" }, { city: "Bucharest", country: "Romania" } ],
