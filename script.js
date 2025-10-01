@@ -32,7 +32,7 @@ function finalizeBootSequence() {
     output.innerHTML = `
         <p>Welcome to <span class="highlight">OrbitOS</span> - Stable Version</p>
         <p>Type 'help' for a list of commands</p>
-        <p class="highlight">Security patch: 1 September 2025</p>`;
+        <p class="highlight">Security patch: 1 October 2025</p>`;
     inputField.disabled = false; prompt.style.display = 'inline'; inputField.focus();
     prompt.textContent = `${config.username}@${config.hostname}:~$ `;
     terminalVisible = true; stoppedProcesses = [];
