@@ -1,26 +1,26 @@
 const commands = {
     help: () => `
         <p><span class="highlight">Available Commands:</span></p>
-        <p>help              - Shows this help message</p>
-        <p>fonts             - Change the terminal font</p>
-        <p>clear             - Clears the terminal screen</p>
-        <p>echo [text]       - Prints the specified text</p>
-        <p>run [filename]    - Executes a specified file (if runnable)</p>
-        <p>date              - Shows current date and time</p>
-        <p>fastfetch         - Displays system information</p>
-        <p>whoami            - Shows current user</p>
-        <p>history           - Shows command history</p>
-        <p>battery           - Shows battery status</p>
-        <p>software [update] - Checks for or attempts to update the system</p>
-        <p>weather           - Shows weather information</p>
-        <p>processes         - Lists running processes</p>
-        <p>calc [expr]       - Calculate mathematical expression</p>
-        <p>browser [url]     - Opens a URL in an iframe</p>
-        <p>stop [process]    - Stop a process or component</p>
-        <p>fortune           - Get a random fortune</p>
-        <p>cowsay [text]     - Display a cow saying your message</p>
-        <p>shutdown          - Shutsdown OrbitOS</p>
-        <p>reboot            - Reboots OrbitOS</p>
+        <p>help           - Shows this help message</p>
+        <p>fonts          - Change the terminal font</p>
+        <p>clear          - Clears the terminal screen</p>
+        <p>echo [text]    - Prints the specified text</p>
+        <p>run [filename] - Executes a specified file (if runnable)</p>
+        <p>date           - Shows current date and time</p>
+        <p>fastfetch      - Displays system information</p>
+        <p>whoami         - Shows current user</p>
+        <p>history        - Shows command history</p>
+        <p>battery        - Shows battery status</p>
+        <p>software       - Shows system changelog</p>
+        <p>weather        - Shows weather information</p>
+        <p>processes      - Lists running processes</p>
+        <p>calc [expr]    - Calculate mathematical expression</p>
+        <p>browser [url]  - Opens a URL in an iframe</p>
+        <p>stop [process] - Stop a process or component</p>
+        <p>fortune        - Get a random fortune</p>
+        <p>cowsay [text]  - Display a cow saying your message</p>
+        <p>shutdown       - Shutsdown OrbitOS</p>
+        <p>reboot         - Reboots OrbitOS</p>
     `,
 
     fonts: (args) => {
@@ -39,7 +39,7 @@ const commands = {
         if (applyFont(fontNumber)) {
              return `<p>Font updated successfully.</p>`;
         } else {
-            return `<p class="error-message">Error: Invalid font number. Please choose a number between 1 and 5.</p>`;
+            return `<p style="color: red;">Error: Invalid font number. Please choose a number between 1 and 5.</p>`;
         }
     },
 
@@ -51,7 +51,7 @@ const commands = {
     echo: (args) => args ? `<p>${args}</p>` : '<p>Nothing to echo.</p>',
 
     run: (args) => {
-        return `<p class="error-message">Error: No runnable files found in the current system.</p>`;
+        return `<p style="color: red;">Error: No runnable files found in the current system.</p>`;
     },
 
     stop: (args) => {
@@ -71,7 +71,7 @@ const commands = {
         }
         else if (processName === 'browser') {
             if (stoppedProcesses.includes('browser')) {
-                return '<p class="error-message">Browser process already stopped.</p>';
+                return '<p style="color: red;">Browser process already stopped.</p>';
             }
             stoppedProcesses.push('browser');
             return '<p>Browser process stopped. "browser" command is now disabled.</p>';
@@ -81,7 +81,7 @@ const commands = {
             return `<p>Process with PID ${pid} stopped successfully.</p>`;
         }
         else {
-            return `<p class="error-message">Error: Process '${processName}' not found or cannot be stopped.</p>`;
+            return `<p style="color: red;">Error: Process '${processName}' not found or cannot be stopped.</p>`;
         }
     },
 
@@ -129,30 +129,27 @@ const commands = {
         `;
     },
 
-    software: (args) => {
-        const command = args.trim().toLowerCase();
+    software: () => {
+        const checkMessage = '<p>Checking for updates...</p>';
 
-        if (command === 'update') {
-            return `<p style="color: var(--error-color);">Error: No new updates available. System is on the latest version.</p>`;
-        }
-
-        const updateId = `update-check-${Date.now()}`;
         setTimeout(() => {
-            const updateMessageContainer = document.getElementById(updateId);
-            if (updateMessageContainer) {
-                 updateMessageContainer.innerHTML = `
-                    <p style="color: var(--success-color);">System is up to date.</p>
-                    <p>Current version: 3.5.5 (Stable)</p>
-                    <p>Changelog:</p>
-                    <ul>
-                        <li>• Security improvements have been added, most notably making the browser run inside a sandboxed environment. This ensures that anything you do inside OrbitOS stays contained and does not affect your main operating system.</li>
-                    </ul>
-                `;
-                 scrollToBottom();
-            }
+            const updateMessage = document.createElement('div');
+            updateMessage.innerHTML = `
+                <p style="color: green;">You are using the latest version!</p>
+                <p>Last successful update: 1 October 2025</p>
+                <p>Version 3.5.4 (stable)</p>
+                <p></p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>• Important security updates to enhance system stability.</li>
+                    <li>• Fixed several minor bugs and performance issues.</li>
+                </ul>
+            `;
+            output.appendChild(updateMessage);
+            scrollToBottom();
         }, 1500);
 
-        return `<div id="${updateId}"><p>Checking for updates...</p></div>`;
+        return checkMessage;
     },
 
     weather: () => {
@@ -214,18 +211,18 @@ const commands = {
         try {
             if (!args) return "<p>Usage: calc [expression]</p>";
             const safeArgs = args.replace(/[^-()\d/*+.]/g, '');
-            if (!safeArgs) return `<p class="error-message">Error: Invalid characters in expression</p>`;
+            if (!safeArgs) return `<p style="color: red;">Error: Invalid characters in expression</p>`;
             const result = new Function(`return ${safeArgs}`)();
             return `<p>Result: ${result}</p>`;
         } catch (error) {
             console.error("Calc Error:", error);
-            return `<p class="error-message">Error: Invalid expression or calculation failed</p>`;
+            return `<p style="color: red;">Error: Invalid expression or calculation failed</p>`;
         }
     },
 
     browser: (args) => {
         if (stoppedProcesses.includes('browser')) {
-            return '<p class="error-message">Browser process is stopped. Use "reboot" to restore functionality.</p>';
+            return '<p style="color: red;">Browser process is stopped. Use "reboot" to restore functionality.</p>';
         }
 
         const url = args.trim();
@@ -234,7 +231,7 @@ const commands = {
         }
 
         if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            return `<p class="error-message">Invalid URL. Please include http:// or https://</p>`;
+            return `<p style="color: red;">Invalid URL. Please include http:// or https://</p>`;
         }
 
         return `
@@ -295,7 +292,7 @@ ${bottomLine}${cow}</pre>`;
         prompt.style.display = 'none';
 
         const generateRandomPath = () => {
-            const dirs = ['/bin', '/etc', /home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
+            const dirs = ['/bin', '/etc', '/home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
             const subdirs = ['local', 'share', 'log', 'mail', 'spool', 'games', 'X11R6', 'include', 'config', 'cache', 'www'];
             const files = ['kernel.log', 'config.sys', 'profile', 'bashrc', 'shadow', 'passwd', 'fstab', 'hosts', 'null', 'random', 'zero', 'vmlinuz', 'initrd.img'];
 
@@ -312,7 +309,7 @@ ${bottomLine}${cow}</pre>`;
 
         const deletionInterval = setInterval(() => {
             const errorElement = document.createElement('p');
-            errorElement.className = 'error-message';
+            errorElement.style.color = 'red';
             errorElement.style.margin = '0';
             errorElement.style.lineHeight = '1.2';
             errorElement.textContent = `rm: cannot remove '${generateRandomPath()}': No such file or directory`;
@@ -336,5 +333,4 @@ ${bottomLine}${cow}</pre>`;
         return '';
     }
 };
-
 
