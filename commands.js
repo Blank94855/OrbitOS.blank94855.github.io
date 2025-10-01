@@ -137,11 +137,11 @@ const commands = {
             updateMessage.innerHTML = `
                 <p style="color: green;">You are using the latest version!</p>
                 <p>Last successful update: 1 October 2025</p>
-                <p>Version 3.5.4 (stable)</p>
+                <p>Version 3.5.5 (stable)</p>
                 <p></p>
                 <p>Changelog:</p>
                 <ul>
-                    <li>• Important security updates to enhance system stability.</li>
+                    <li>• Important security updates to enhance system stability,now the browser runs in a sandbox environment.</li>
                     <li>• Fixed several minor bugs and performance issues.</li>
                 </ul>
             `;
