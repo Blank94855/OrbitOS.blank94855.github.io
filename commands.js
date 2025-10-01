@@ -17,7 +17,7 @@ const commands = {
         <p>calc [expr]    - Calculate mathematical expression</p>
         <p>browser [url]  - Opens a URL in an iframe</p>
         <p>stop [process] - Stop a process or component</p>
-        <p>fortune        - Get a random creepy fortune</p>
+        <p>fortune        - Get a random fortune</p>
         <p>cowsay [text]  - Display a cow saying your message</p>
         <p>shutdown       - Shutsdown OrbitOS</p>
         <p>reboot         - Reboots OrbitOS</p>
@@ -140,7 +140,7 @@ const commands = {
                 <p>Version 3.5.5</p>
                 <p></p>
                 <ul>
-                    <li>• A brand new Halloween theme has been added and will be available until November 1, giving the system a spooky seasonal look. Alongside this, the October update introduces important security improvements, most notably making the browser run inside a sandboxed environment, ensuring that anything you do inside Orbit OS stays contained and does not affect your main operating system.</li>
+                    <li>• Security improvements have been added, most notably making the browser run inside a sandboxed environment. This ensures that anything you do inside OrbitOS stays contained and does not affect your main operating system.</li>
                 </ul>
             `;
             output.appendChild(updateMessage);
@@ -245,18 +245,18 @@ const commands = {
 
     fortune: () => {
         const fortunes = [
-            "A shadow with a crooked smile follows you home tonight. Don't turn around.",
-            "The jack-o'-lantern on your porch isn't just a decoration. It's watching you.",
-            "Beware the candy offered by a stranger... it might be your last treat.",
-            "The scarecrow in the field moves when you're not looking.",
-            "Listen closely... you can hear whispers from the graveyard calling your name.",
-            "The costume you wear tonight might just stick.",
-            "Something wicked this way comes, and it knows where you live.",
-            "Don't blow out the candle in your pumpkin. It's the only thing keeping them away."
+            "The early bird gets the worm, but the second mouse gets the cheese.",
+            "A wise man once said nothing.",
+            "You will find a thing. It may be a new thing, or it may be a thing you have lost.",
+            "The journey of a thousand miles begins with a single step. And a flat tire.",
+            "Your reality check is about to bounce.",
+            "If you can't convince them, confuse them.",
+            "An alien of some sort will be appearing to you shortly.",
+            "You are not illiterate."
         ];
 
         const randomIndex = Math.floor(Math.random() * fortunes.length);
-        return `<p class="highlight">Your terrifying Halloween fortune:</p><p>${fortunes[randomIndex]}</p>`;
+        return `<p class="highlight">Your fortune:</p><p>${fortunes[randomIndex]}</p>`;
     },
 
     cowsay: (args) => {
@@ -331,4 +331,5 @@ ${bottomLine}${cow}</pre>`;
         return '';
     }
 };
+
 
