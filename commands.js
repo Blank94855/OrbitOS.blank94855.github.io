@@ -1,26 +1,26 @@
 const commands = {
     help: () => `
         <p><span class="highlight">Available Commands:</span></p>
-        <p>help           - Shows this help message</p>
-        <p>fonts          - Change the terminal font</p>
-        <p>clear          - Clears the terminal screen</p>
-        <p>echo [text]    - Prints the specified text</p>
-        <p>run [filename] - Executes a specified file (if runnable)</p>
-        <p>date           - Shows current date and time</p>
-        <p>fastfetch      - Displays system information</p>
-        <p>whoami         - Shows current user</p>
-        <p>history        - Shows command history</p>
-        <p>battery        - Shows battery status</p>
-        <p>software       - Shows system changelog</p>
-        <p>weather        - Shows weather information</p>
-        <p>processes      - Lists running processes</p>
-        <p>calc [expr]    - Calculate mathematical expression</p>
-        <p>browser [url]  - Opens a URL in an iframe</p>
-        <p>stop [process] - Stop a process or component</p>
-        <p>fortune        - Get a random fortune</p>
-        <p>cowsay [text]  - Display a cow saying your message</p>
-        <p>shutdown       - Shutsdown OrbitOS</p>
-        <p>reboot         - Reboots OrbitOS</p>
+        <p>help              - Shows this help message</p>
+        <p>fonts             - Change the terminal font</p>
+        <p>clear             - Clears the terminal screen</p>
+        <p>echo [text]       - Prints the specified text</p>
+        <p>run [filename]    - Executes a specified file (if runnable)</p>
+        <p>date              - Shows current date and time</p>
+        <p>fastfetch         - Displays system information</p>
+        <p>whoami            - Shows current user</p>
+        <p>history           - Shows command history</p>
+        <p>battery           - Shows battery status</p>
+        <p>software [update] - Checks for or attempts to update the system</p>
+        <p>weather           - Shows weather information</p>
+        <p>processes         - Lists running processes</p>
+        <p>calc [expr]       - Calculate mathematical expression</p>
+        <p>browser [url]     - Opens a URL in an iframe</p>
+        <p>stop [process]    - Stop a process or component</p>
+        <p>fortune           - Get a random fortune</p>
+        <p>cowsay [text]     - Display a cow saying your message</p>
+        <p>shutdown          - Shutsdown OrbitOS</p>
+        <p>reboot            - Reboots OrbitOS</p>
     `,
 
     fonts: (args) => {
@@ -129,25 +129,30 @@ const commands = {
         `;
     },
 
-    software: () => {
-        const checkMessage = '<p style="color: var(--success-color);">Checking for updates...</p>';
+    software: (args) => {
+        const command = args.trim().toLowerCase();
 
+        if (command === 'update') {
+            return `<p style="color: var(--error-color);">Error: No new updates available. System is on the latest version.</p>`;
+        }
+
+        const updateId = `update-check-${Date.now()}`;
         setTimeout(() => {
-            const updateMessage = document.createElement('div');
-            updateMessage.innerHTML = `
-                <p style="color: var(--accent-color);">You are using the latest version!</p>
-                <p>Last successful update: 1 October 2025</p>
-                <p>Version 3.5.5</p>
-                <p></p>
-                <ul>
-                    <li>• Security improvements have been added, most notably making the browser run inside a sandboxed environment. This ensures that anything you do inside OrbitOS stays contained and does not affect your main operating system.</li>
-                </ul>
-            `;
-            output.appendChild(updateMessage);
-            scrollToBottom();
+            const updateMessageContainer = document.getElementById(updateId);
+            if (updateMessageContainer) {
+                 updateMessageContainer.innerHTML = `
+                    <p style="color: var(--success-color);">System is up to date.</p>
+                    <p>Current version: 3.5.5 (Stable)</p>
+                    <p>Changelog:</p>
+                    <ul>
+                        <li>• Security improvements have been added, most notably making the browser run inside a sandboxed environment. This ensures that anything you do inside OrbitOS stays contained and does not affect your main operating system.</li>
+                    </ul>
+                `;
+                 scrollToBottom();
+            }
         }, 1500);
 
-        return checkMessage;
+        return `<div id="${updateId}"><p>Checking for updates...</p></div>`;
     },
 
     weather: () => {
@@ -290,7 +295,7 @@ ${bottomLine}${cow}</pre>`;
         prompt.style.display = 'none';
 
         const generateRandomPath = () => {
-            const dirs = ['/bin', '/etc', '/home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
+            const dirs = ['/bin', '/etc', /home', '/usr', '/var', '/lib', '/root', '/tmp', '/dev', '/proc', '/sbin', '/opt'];
             const subdirs = ['local', 'share', 'log', 'mail', 'spool', 'games', 'X11R6', 'include', 'config', 'cache', 'www'];
             const files = ['kernel.log', 'config.sys', 'profile', 'bashrc', 'shadow', 'passwd', 'fstab', 'hosts', 'null', 'random', 'zero', 'vmlinuz', 'initrd.img'];
 
