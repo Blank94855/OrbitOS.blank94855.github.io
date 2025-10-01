@@ -57,3 +57,10 @@ The next generation is coming. Orbit OS 4.0 is delivering a professional, animat
 OrbitOS 4.0 is still in the work, but you can always try it [here](https://blank94855.github.io/OrbitOS--4.0-alpha.blank94855.github.io/)
 
 # OrbitOS history
+![1000000995](https://github.com/user-attachments/assets/1ce56250-a206-4ccd-9e2d-1251cb6d4150)
+![1000000994](https://github.com/user-attachments/assets/8259e491-338a-4711-9fe1-f45449bdfe6f)
+<img width="1080" height="1710" alt="1000000984" src="https://github.com/user-attachments/assets/a02ffdf8-19d1-4e32-aeef-b7cfd6aca615" />
+![1000000986](https://github.com/user-attachments/assets/dc1db577-5aa9-4858-9edb-63aebe10d459)
+<img width="1080" height="1722" alt="1000000982" src="https://github.com/user-attachments/assets/0f34cbfc-5641-4308-8ec7-3f77d5dc6e7d" />
+![1000000987](https://github.com/user-attachments/assets/d20af841-00b8-42b9-b0da-6ad872bf2f49)
+![1000000985](https://github.com/user-attachments/assets/9601a3cd-2efc-4ba6-81b0-d0acebc09aee)
